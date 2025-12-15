@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QC21PHnWTZ4=",
+  "dgSpecHash": "oEjnby2K5OA=",
   "success": true,
-  "projectFilePath": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi.csproj",
+  "projectFilePath": "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nada\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\nada\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
