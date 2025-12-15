@@ -1,28 +1,37 @@
 # PatientApi (ASP.NET Core 8)
 
-Minimal ASP.NET Core 8 Web API implementing Patient and MedicalHistory domain models with EF Core (SQLite recommended for local development).
+Minimal ASP.NET Core 8 Web API implementing Patient and MedicalHistory domain models with EF Core.
 
-Quick start
+Quick start (SQL Server)
 
 1. Navigate to the project folder:
 
 ```powershell
-cd "c:/Users/nada/OneDrive - Nile University/Desktop/back/ClinicWebsite_BackEnd/PatientApi"
+cd "C:/Users/nada/OneDrive - Nile University/Desktop/back/ClinicWebsite_BackEnd/PatientApi"
 ```
 
-2. Restore and run:
+2. Configure the SQL Server connection string in `appsettings.json` (example):
 
-```powershell
-dotnet restore
-dotnet run
+```json
+"ConnectionStrings": {
+	"DefaultConnection": "Server=YOUR_SERVER;Database=patient_domain;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
+}
 ```
 
-3. Generate EF migrations and apply (requires `dotnet-ef` tool):
+3. Install EF tooling (if not already installed), create migrations and apply them to your SQL Server:
 
 ```powershell
 dotnet tool install --global dotnet-ef --version 8.0.0
-dotnet ef migrations add InitialCreate -p .
-dotnet ef database update -p .
+dotnet restore
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+4. Run the API (Development mode recommended while testing):
+
+```powershell
+set ASPNETCORE_ENVIRONMENT=Development
+dotnet run --urls "http://127.0.0.1:5000;https://127.0.0.1:5001"
 ```
 
 API endpoints (examples):
@@ -36,4 +45,5 @@ API endpoints (examples):
 
 Notes:
 - `Patient.UserId` is an optional string mapping to an external user system.
-- Attachments API is not included (optional next step).
+- Attachments API is implemented; uploaded files are stored under `wwwroot/uploads/patients/{id}`.
+- This project uses SQL Server by default in `appsettings.json`. If you previously had a local SQLite file (e.g. `clinic.db`), it is not required.
