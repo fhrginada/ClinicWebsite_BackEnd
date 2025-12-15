@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PatientApi.DTOs;
 using PatientApi.Services.Interfaces;
+using PatientApi.Models;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,12 +1,12 @@
-using PatientApi.DTOs;
+using PatientApi.Models;
 
 namespace PatientApi.Services.Interfaces;
 
 public interface IMedicalHistoryService
 {
-    Task<(int total, List<MedicalHistoryDto> items)> GetAsync(int? patientId, int page, int pageSize);
-    Task<MedicalHistoryDto?> GetByIdAsync(int id);
-    Task<MedicalHistoryDto?> CreateAsync(MedicalHistoryCreateDto dto);
-    Task<bool> UpdateAsync(int id, MedicalHistoryUpdateDto dto);
+    Task<(int total, List<MedicalHistory> items)> GetAsync(int? patientId, int page, int pageSize);
+    Task<MedicalHistory?> GetByIdAsync(int id);
+    Task<MedicalHistory?> CreateAsync(MedicalHistory dto);
+    Task<bool> UpdateAsync(int id, MedicalHistory dto);
     Task<bool> DeleteAsync(int id);
 }

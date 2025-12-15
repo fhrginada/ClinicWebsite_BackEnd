@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientApi.Data;
 using PatientApi.Models;
-using PatientApi.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -27,7 +26,7 @@ public class MedicalHistoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] MedicalHistoryCreateDto dto)
+    public async Task<IActionResult> Create([FromBody] MedicalHistory dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (dto.Date > DateTime.UtcNow) return BadRequest("Date cannot be in the future");
@@ -37,7 +36,7 @@ public class MedicalHistoriesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] MedicalHistoryUpdateDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] MedicalHistory dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (dto.Date > DateTime.UtcNow) return BadRequest("Date cannot be in the future");

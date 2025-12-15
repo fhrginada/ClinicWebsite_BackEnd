@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PatientApi.Data;
-using PatientApi.DTOs;
 using PatientApi.Models;
 
 [ApiController]
@@ -28,7 +27,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] PatientCreateDto dto)
+    public async Task<IActionResult> Create([FromBody] Patient dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         try
@@ -43,7 +42,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] PatientUpdateDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] Patient dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         try

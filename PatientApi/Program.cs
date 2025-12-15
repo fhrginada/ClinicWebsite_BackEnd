@@ -11,6 +11,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register services
+// repositories
+builder.Services.AddScoped<PatientApi.Services.Repositories.Interfaces.IPatientRepository, PatientApi.Services.Repositories.PatientRepository>();
+builder.Services.AddScoped<PatientApi.Services.Repositories.Interfaces.IMedicalHistoryRepository, PatientApi.Services.Repositories.MedicalHistoryRepository>();
+builder.Services.AddScoped<PatientApi.Services.Repositories.Interfaces.IPatientAttachmentRepository, PatientApi.Services.Repositories.PatientAttachmentRepository>();
+
+// services
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientService, PatientApi.Services.PatientService>();
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IMedicalHistoryService, PatientApi.Services.MedicalHistoryService>();
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientAttachmentService, PatientApi.Services.PatientAttachmentService>();

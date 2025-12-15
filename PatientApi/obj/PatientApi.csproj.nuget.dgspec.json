@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj": {}
+    "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj": {
+    "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj",
+        "projectUniqueName": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj",
         "projectName": "PatientApi",
-        "projectPath": "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj",
+        "projectPath": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\PatientApi.csproj",
         "packagesPath": "C:\\Users\\nada\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\obj\\",
+        "outputPath": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

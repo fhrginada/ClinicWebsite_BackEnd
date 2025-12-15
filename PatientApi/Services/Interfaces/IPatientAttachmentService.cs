@@ -1,12 +1,12 @@
-using PatientApi.DTOs;
+using PatientApi.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace PatientApi.Services.Interfaces;
 
 public interface IPatientAttachmentService
 {
-    Task<PatientAttachmentDto?> UploadAsync(int patientId, IFormFile file);
-    Task<PatientAttachmentDto?> GetAsync(int id);
-    Task<IEnumerable<PatientAttachmentDto>> ListAsync(int patientId);
+    Task<PatientAttachment?> UploadAsync(int patientId, IFormFile file);
+    Task<PatientAttachment?> GetAsync(int id);
+    Task<IEnumerable<PatientAttachment>> ListAsync(int patientId);
     Task<bool> DeleteAsync(int id);
 }

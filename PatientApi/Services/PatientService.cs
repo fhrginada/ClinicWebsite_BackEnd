@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PatientApi.Data;
-using PatientApi.DTOs;
 using PatientApi.Models;
 using PatientApi.Services.Interfaces;
 
@@ -8,12 +7,12 @@ namespace PatientApi.Services;
 
 public class PatientService : IPatientService
 {
-    private readonly AppDbContext _db;
-    public PatientService(AppDbContext db) => _db = db;
+    private readonly PatientApi.Services.Repositories.Interfaces.IPatientRepository _repo;
+    public PatientService(PatientApi.Services.Repositories.Interfaces.IPatientRepository repo) => _repo = repo;
 
-    public async Task<(int total, List<PatientDto> items)> GetAsync(string? name, int? gender, int? ageMin, int? ageMax, int page, int pageSize)
+    public async Task<(int total, List<Patient> items)> GetAsync(string? name, int? gender, int? ageMin, int? ageMax, int page, int pageSize)
     {
-        var q = _db.Patients.AsQueryable();
+        var q = _repo.Query();
         if (!string.IsNullOrWhiteSpace(name)) q = q.Where(p => p.FirstName.Contains(name) || (p.LastName != null && p.LastName.Contains(name)));
         if (gender.HasValue) q = q.Where(p => (int)p.Gender == gender.Value);
         if (ageMin.HasValue || ageMax.HasValue)
@@ -24,63 +23,28 @@ public class PatientService : IPatientService
         }
 
         var total = await q.CountAsync();
-        var list = await q.OrderBy(p => p.Id).Skip((page - 1) * pageSize).Take(pageSize).Include(p => p.MedicalHistories).ToListAsync();
+        var list = await q.OrderBy(p => p.Id).Skip((page - 1) * pageSize).Take(pageSize).Include(p => p.MedicalHistories).Include(p => p.Attachments).ToListAsync();
 
-        var items = list.Select(p => new PatientDto
+        // remove back-references to avoid JSON cycles
+        foreach (var p in list)
         {
-            Id = p.Id,
-            UserId = p.UserId,
-            FirstName = p.FirstName,
-            LastName = p.LastName,
-            DateOfBirth = p.DateOfBirth,
-            Gender = p.Gender,
-            Phone = p.Phone,
-            Email = p.Email,
-            CreatedAt = p.CreatedAt,
-            MedicalHistories = p.MedicalHistories.Select(m => new MedicalHistoryDto
-            {
-                Id = m.Id,
-                PatientId = m.PatientId,
-                Date = m.Date,
-                Diagnosis = m.Diagnosis,
-                Treatment = m.Treatment,
-                Notes = m.Notes,
-                CreatedAt = m.CreatedAt
-            }).ToList()
-        }).ToList();
+            foreach (var m in p.MedicalHistories) m.Patient = null;
+            foreach (var a in p.Attachments) a.Patient = null;
+        }
 
-        return (total, items);
+        return (total, list);
     }
 
-    public async Task<PatientDto?> GetByIdAsync(int id)
+    public async Task<Patient?> GetByIdAsync(int id)
     {
-        var p = await _db.Patients.Include(x => x.MedicalHistories).FirstOrDefaultAsync(x => x.Id == id);
+        var p = await _repo.Query().Include(x => x.MedicalHistories).Include(x => x.Attachments).FirstOrDefaultAsync(x => x.Id == id);
         if (p == null) return null;
-        return new PatientDto
-        {
-            Id = p.Id,
-            UserId = p.UserId,
-            FirstName = p.FirstName,
-            LastName = p.LastName,
-            DateOfBirth = p.DateOfBirth,
-            Gender = p.Gender,
-            Phone = p.Phone,
-            Email = p.Email,
-            CreatedAt = p.CreatedAt,
-            MedicalHistories = p.MedicalHistories.Select(m => new MedicalHistoryDto
-            {
-                Id = m.Id,
-                PatientId = m.PatientId,
-                Date = m.Date,
-                Diagnosis = m.Diagnosis,
-                Treatment = m.Treatment,
-                Notes = m.Notes,
-                CreatedAt = m.CreatedAt
-            }).ToList()
-        };
+        foreach (var m in p.MedicalHistories) m.Patient = null;
+        foreach (var a in p.Attachments) a.Patient = null;
+        return p;
     }
 
-    public async Task<PatientDto> CreateAsync(PatientCreateDto dto)
+    public async Task<Patient> CreateAsync(Patient dto)
     {
         // Domain validation
         var today = DateTime.UtcNow.Date;
@@ -99,26 +63,17 @@ public class PatientService : IPatientService
             Phone = dto.Phone,
             Email = dto.Email,
         };
-        _db.Patients.Add(p);
-        await _db.SaveChangesAsync();
-        return new PatientDto
-        {
-            Id = p.Id,
-            UserId = p.UserId,
-            FirstName = p.FirstName,
-            LastName = p.LastName,
-            DateOfBirth = p.DateOfBirth,
-            Gender = p.Gender,
-            Phone = p.Phone,
-            Email = p.Email,
-            CreatedAt = p.CreatedAt,
-            MedicalHistories = new List<MedicalHistoryDto>()
-        };
+        await _repo.AddAsync(p);
+        await _repo.SaveChangesAsync();
+
+        p.MedicalHistories = new List<MedicalHistory>();
+        p.Attachments = new List<PatientAttachment>();
+        return p;
     }
 
-    public async Task<bool> UpdateAsync(int id, PatientUpdateDto dto)
+    public async Task<bool> UpdateAsync(int id, Patient dto)
     {
-        var p = await _db.Patients.FindAsync(id);
+        var p = await _repo.FindAsync(id);
         if (p == null) return false;
         // Domain validation
         var today = DateTime.UtcNow.Date;
@@ -133,16 +88,16 @@ public class PatientService : IPatientService
         p.Gender = dto.Gender;
         p.Phone = dto.Phone;
         p.Email = dto.Email;
-        await _db.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var p = await _db.Patients.FindAsync(id);
+        var p = await _repo.FindAsync(id);
         if (p == null) return false;
-        _db.Patients.Remove(p);
-        await _db.SaveChangesAsync();
+        _repo.Remove(p);
+        await _repo.SaveChangesAsync();
         return true;
     }
 }

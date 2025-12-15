@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PatientApi.Data;
-using PatientApi.DTOs;
 using PatientApi.Models;
 using PatientApi.Services.Interfaces;
 
@@ -8,47 +7,41 @@ namespace PatientApi.Services;
 
 public class MedicalHistoryService : IMedicalHistoryService
 {
-    private readonly AppDbContext _db;
-    public MedicalHistoryService(AppDbContext db) => _db = db;
-
-    public async Task<(int total, List<MedicalHistoryDto> items)> GetAsync(int? patientId, int page, int pageSize)
+    private readonly PatientApi.Services.Repositories.Interfaces.IMedicalHistoryRepository _repo;
+    private readonly PatientApi.Services.Repositories.Interfaces.IPatientRepository _patientRepo;
+    public MedicalHistoryService(PatientApi.Services.Repositories.Interfaces.IMedicalHistoryRepository repo, PatientApi.Services.Repositories.Interfaces.IPatientRepository patientRepo)
     {
-        var q = _db.MedicalHistories.AsQueryable();
+        _repo = repo;
+        _patientRepo = patientRepo;
+    }
+
+    public async Task<(int total, List<MedicalHistory> items)> GetAsync(int? patientId, int page, int pageSize)
+    {
+        var q = _repo.Query();
         if (patientId.HasValue) q = q.Where(m => m.PatientId == patientId.Value);
         var total = await q.CountAsync();
-        var list = await q.OrderByDescending(m => m.Date).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-        var items = list.Select(m => new MedicalHistoryDto
+        var list = await q.OrderByDescending(m => m.Date).Skip((page - 1) * pageSize).Take(pageSize).Include(m => m.Patient).ToListAsync();
+
+        // remove back-reference to avoid JSON cycles
+        foreach (var m in list)
         {
-            Id = m.Id,
-            PatientId = m.PatientId,
-            Date = m.Date,
-            Diagnosis = m.Diagnosis,
-            Treatment = m.Treatment,
-            Notes = m.Notes,
-            CreatedAt = m.CreatedAt
-        }).ToList();
-        return (total, items);
+            m.Patient = null;
+        }
+
+        return (total, list);
     }
 
-    public async Task<MedicalHistoryDto?> GetByIdAsync(int id)
+    public async Task<MedicalHistory?> GetByIdAsync(int id)
     {
-        var m = await _db.MedicalHistories.FindAsync(id);
+        var m = await _repo.Query().Include(x => x.Patient).FirstOrDefaultAsync(x => x.Id == id);
         if (m == null) return null;
-        return new MedicalHistoryDto
-        {
-            Id = m.Id,
-            PatientId = m.PatientId,
-            Date = m.Date,
-            Diagnosis = m.Diagnosis,
-            Treatment = m.Treatment,
-            Notes = m.Notes,
-            CreatedAt = m.CreatedAt
-        };
+        m.Patient = null;
+        return m;
     }
 
-    public async Task<MedicalHistoryDto?> CreateAsync(MedicalHistoryCreateDto dto)
+    public async Task<MedicalHistory?> CreateAsync(MedicalHistory dto)
     {
-        var patient = await _db.Patients.FindAsync(dto.PatientId);
+        var patient = await _patientRepo.FindAsync(dto.PatientId);
         if (patient == null) return null;
         var m = new MedicalHistory
         {
@@ -58,38 +51,30 @@ public class MedicalHistoryService : IMedicalHistoryService
             Treatment = dto.Treatment,
             Notes = dto.Notes
         };
-        _db.MedicalHistories.Add(m);
-        await _db.SaveChangesAsync();
-        return new MedicalHistoryDto
-        {
-            Id = m.Id,
-            PatientId = m.PatientId,
-            Date = m.Date,
-            Diagnosis = m.Diagnosis,
-            Treatment = m.Treatment,
-            Notes = m.Notes,
-            CreatedAt = m.CreatedAt
-        };
+        await _repo.AddAsync(m);
+        await _repo.SaveChangesAsync();
+        m.Patient = null;
+        return m;
     }
 
-    public async Task<bool> UpdateAsync(int id, MedicalHistoryUpdateDto dto)
+    public async Task<bool> UpdateAsync(int id, MedicalHistory dto)
     {
-        var m = await _db.MedicalHistories.FindAsync(id);
+        var m = await _repo.FindAsync(id);
         if (m == null) return false;
         m.Date = dto.Date;
         m.Diagnosis = dto.Diagnosis;
         m.Treatment = dto.Treatment;
         m.Notes = dto.Notes;
-        await _db.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var m = await _db.MedicalHistories.FindAsync(id);
+        var m = await _repo.FindAsync(id);
         if (m == null) return false;
-        _db.MedicalHistories.Remove(m);
-        await _db.SaveChangesAsync();
+        _repo.Remove(m);
+        await _repo.SaveChangesAsync();
         return true;
     }
 }
