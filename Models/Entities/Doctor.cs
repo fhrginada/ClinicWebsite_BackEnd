@@ -1,0 +1,33 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
+namespace PatientApi.Models.Entities
+{
+    public class Doctor
+    {
+        [Key]
+        public int DoctorId { get; set; }
+
+        [Required, StringLength(150)]
+        public string FullName { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        public string? Specialty { get; set; }
+
+ 
+        [NotMapped]
+        public string Name => FullName;
+
+        [NotMapped]
+        public string Specialization => Specialty ?? string.Empty;
+
+        public int UserId { get; set; }
+        public User User { get; set; } = null!;
+
+        public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<Prescription> PrescriptionsIssued { get; set; } = new List<Prescription>();
+    }
+}

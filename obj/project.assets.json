@@ -4404,23 +4404,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nada\\.nuget\\packages\\": {},
+    "C:\\Users\\MG\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi.csproj",
+      "projectUniqueName": "C:\\Users\\MG\\source\\repos\\ClinicWebsite_BackEnd\\PatientApi.csproj",
       "projectName": "PatientApi",
-      "projectPath": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\PatientApi.csproj",
-      "packagesPath": "C:\\Users\\nada\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\nada\\OneDrive - Nile University\\Desktop\\back\\ClinicWebsite_BackEnd\\obj\\",
+      "projectPath": "C:\\Users\\MG\\source\\repos\\ClinicWebsite_BackEnd\\PatientApi.csproj",
+      "packagesPath": "C:\\Users\\MG\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\MG\\source\\repos\\ClinicWebsite_BackEnd\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\nada\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\MG\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
