@@ -274,3 +274,15 @@ c:\Users\nada\OneDrive - Nile University\Desktop\back\ClinicWebsite_BackEnd\obj\
 c:\Users\nada\OneDrive - Nile University\Desktop\back\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.pdb
 c:\Users\nada\OneDrive - Nile University\Desktop\back\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.genruntimeconfig.cache
 c:\Users\nada\OneDrive - Nile University\Desktop\back\ClinicWebsite_BackEnd\obj\Debug\net8.0\ref\PatientApi.dll
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.csproj.AssemblyReference.cache
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.AssemblyInfoInputs.cache
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.AssemblyInfo.cs
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.csproj.CoreCompileInputs.cache
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.sourcelink.json
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.dll
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\refint\PatientApi.dll
+C:\Users\MG\source\repos\ClinicWebsite_BackEnd\obj\Debug\net8.0\PatientApi.pdb
