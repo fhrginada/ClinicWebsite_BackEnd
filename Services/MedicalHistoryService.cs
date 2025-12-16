@@ -22,7 +22,7 @@ public class MedicalHistoryService : IMedicalHistoryService
         var q = _repo.Query();
         if (patientId.HasValue) q = q.Where(m => m.PatientId == patientId.Value);
         var total = await q.CountAsync();
-        var list = await q.OrderByDescending(m => m.Date).Skip((page - 1) * pageSize).Take(pageSize).Include(m => m.Patient).ToListAsync();
+        var list = await q.OrderByDescending(m => m.DateRecorded).Skip((page - 1) * pageSize).Take(pageSize).Include(m => m.Patient).ToListAsync();
         var vm = list.Select(ViewModelMapper.ToViewModel).ToList();
         return (total, vm);
     }
@@ -41,10 +41,12 @@ public class MedicalHistoryService : IMedicalHistoryService
         var m = new MedicalHistory
         {
             PatientId = dto.PatientId,
-            Date = dto.Date,
+            DoctorId = dto.DoctorId,
+            DateRecorded = dto.DateRecorded,
+            FollowUpDate = dto.FollowUpDate,
             Diagnosis = dto.Diagnosis,
             Treatment = dto.Treatment,
-            Notes = dto.Notes
+            AttachmentUrl = dto.AttachmentUrl
         };
         await _repo.AddAsync(m);
         await _repo.SaveChangesAsync();
@@ -55,10 +57,12 @@ public class MedicalHistoryService : IMedicalHistoryService
     {
         var m = await _repo.FindAsync(id);
         if (m == null) return false;
-        m.Date = dto.Date;
+        m.DoctorId = dto.DoctorId;
+        m.DateRecorded = dto.DateRecorded;
+        m.FollowUpDate = dto.FollowUpDate;
         m.Diagnosis = dto.Diagnosis;
         m.Treatment = dto.Treatment;
-        m.Notes = dto.Notes;
+        m.AttachmentUrl = dto.AttachmentUrl;
         await _repo.SaveChangesAsync();
         return true;
     }

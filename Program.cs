@@ -14,12 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // repositories
 builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IPatientRepository, PatientApi.Repositories.PatientRepository>();
 builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IMedicalHistoryRepository, PatientApi.Repositories.MedicalHistoryRepository>();
-builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IPatientAttachmentRepository, PatientApi.Repositories.PatientAttachmentRepository>();
 
 // services
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientService, PatientApi.Services.PatientService>();
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IMedicalHistoryService, PatientApi.Services.MedicalHistoryService>();
-builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientAttachmentService, PatientApi.Services.PatientAttachmentService>();
 
 var app = builder.Build();
 

@@ -5,21 +5,25 @@ namespace PatientApi.Models.ViewModels;
 
 public class PatientUpdateViewModel
 {
-    [Required, MaxLength(100)]
-    public string FirstName { get; set; } = null!;
-
-    [MaxLength(100)]
-    public string? LastName { get; set; }
-
     [Required]
     public DateTime DateOfBirth { get; set; }
 
     [Required]
     public Gender Gender { get; set; } = Gender.Unknown;
 
+    [MaxLength(3)]
+    [RegularExpression("^(A|B|AB|O)[+-]$", ErrorMessage = "Blood type must be A+, A-, B+, B-, AB+, AB-, O+, or O-")]
+    public string? BloodType { get; set; }
+
     [MaxLength(50)]
     public string? Phone { get; set; }
 
-    [EmailAddress, MaxLength(200)]
-    public string? Email { get; set; }
+    [MaxLength(300)]
+    public string? Address { get; set; }
+
+    [MaxLength(50)]
+    public string? RoleName { get; set; }
+
+    [MaxLength(100)]
+    public string? UserId { get; set; }
 }
