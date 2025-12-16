@@ -1,6 +1,7 @@
 ### Build outputs
 /bin/
 /obj/
+.vs/
 
 ### User uploads and generated content
 /wwwroot/uploads/
