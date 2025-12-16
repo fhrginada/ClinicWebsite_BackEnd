@@ -13,9 +13,9 @@ public class PatientsController : ControllerBase
     public PatientsController(PatientApi.Services.Interfaces.IPatientService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] int? gender, [FromQuery] int? ageMin, [FromQuery] int? ageMax, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> Get([FromQuery] int? gender, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var (total, items) = await _service.GetAsync(name, gender, ageMin, ageMax, page, pageSize);
+        var (total, items) = await _service.GetAsync(gender, page, pageSize);
         return Ok(new { total, page, pageSize, items });
     }
 
