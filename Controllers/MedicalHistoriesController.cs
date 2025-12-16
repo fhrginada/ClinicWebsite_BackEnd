@@ -30,7 +30,7 @@ public class MedicalHistoriesController : ControllerBase
     public async Task<IActionResult> Create([FromBody] MedicalHistoryCreateViewModel vm)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        if (vm.Date > DateTime.UtcNow) return BadRequest("Date cannot be in the future");
+        if (vm.DateRecorded > DateTime.UtcNow) return BadRequest("DateRecorded cannot be in the future");
         var entity = InputMapper.ToEntity(vm);
         var created = await _service.CreateAsync(entity);
         if (created == null) return BadRequest("Patient not found");
@@ -41,7 +41,7 @@ public class MedicalHistoriesController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] MedicalHistoryUpdateViewModel vm)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        if (vm.Date > DateTime.UtcNow) return BadRequest("Date cannot be in the future");
+        if (vm.DateRecorded > DateTime.UtcNow) return BadRequest("DateRecorded cannot be in the future");
         var temp = new MedicalHistory();
         InputMapper.ApplyUpdate(vm, temp);
         var ok = await _service.UpdateAsync(id, temp);

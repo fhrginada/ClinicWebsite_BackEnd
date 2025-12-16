@@ -8,23 +8,25 @@ public static class InputMapper
     {
         return new Patient
         {
-            FirstName = vm.FirstName,
-            LastName = vm.LastName,
             DateOfBirth = vm.DateOfBirth,
             Gender = vm.Gender,
+            BloodType = vm.BloodType,
             Phone = vm.Phone,
-            Email = vm.Email
+            Address = vm.Address,
+            RoleName = vm.RoleName,
+            UserId = vm.UserId
         };
     }
 
     public static void ApplyUpdate(PatientUpdateViewModel vm, Patient p)
     {
-        p.FirstName = vm.FirstName;
-        p.LastName = vm.LastName;
         p.DateOfBirth = vm.DateOfBirth;
         p.Gender = vm.Gender;
+        p.BloodType = vm.BloodType;
         p.Phone = vm.Phone;
-        p.Email = vm.Email;
+        p.Address = vm.Address;
+        p.RoleName = vm.RoleName;
+        p.UserId = vm.UserId;
     }
 
     public static MedicalHistory ToEntity(MedicalHistoryCreateViewModel vm)
@@ -32,18 +34,22 @@ public static class InputMapper
         return new MedicalHistory
         {
             PatientId = vm.PatientId,
-            Date = vm.Date,
+            DoctorId = vm.DoctorId,
+            DateRecorded = vm.DateRecorded,
+            FollowUpDate = vm.FollowUpDate,
             Diagnosis = vm.Diagnosis,
             Treatment = vm.Treatment,
-            Notes = vm.Notes
+            AttachmentUrl = vm.AttachmentUrl
         };
     }
 
     public static void ApplyUpdate(MedicalHistoryUpdateViewModel vm, MedicalHistory m)
     {
-        m.Date = vm.Date;
+        m.DoctorId = vm.DoctorId;
+        m.DateRecorded = vm.DateRecorded;
+        m.FollowUpDate = vm.FollowUpDate;
         m.Diagnosis = vm.Diagnosis;
         m.Treatment = vm.Treatment;
-        m.Notes = vm.Notes;
+        m.AttachmentUrl = vm.AttachmentUrl;
     }
 }

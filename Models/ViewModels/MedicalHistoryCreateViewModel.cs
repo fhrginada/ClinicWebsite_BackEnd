@@ -8,9 +8,15 @@ public class MedicalHistoryCreateViewModel
     public int PatientId { get; set; }
 
     [Required]
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateTime DateRecorded { get; set; } = DateTime.UtcNow;
+
+    public int? DoctorId { get; set; }
 
     public string? Diagnosis { get; set; }
     public string? Treatment { get; set; }
-    public string? Notes { get; set; }
+
+    public DateTime? FollowUpDate { get; set; }
+
+    [MaxLength(1000)]
+    public string? AttachmentUrl { get; set; }
 }

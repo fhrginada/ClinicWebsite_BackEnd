@@ -5,7 +5,7 @@ namespace PatientApi.Services.Interfaces;
 
 public interface IPatientService
 {
-    Task<(int total, List<PatientViewModel> items)> GetAsync(string? name, int? gender, int? ageMin, int? ageMax, int page, int pageSize);
+    Task<(int total, List<PatientViewModel> items)> GetAsync(int? gender, int page, int pageSize);
     Task<PatientViewModel?> GetByIdAsync(int id);
     Task<PatientViewModel> CreateAsync(Patient dto);
     Task<bool> UpdateAsync(int id, Patient dto);

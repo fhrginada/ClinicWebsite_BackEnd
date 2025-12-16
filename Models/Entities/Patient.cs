@@ -9,26 +9,24 @@ public class Patient
     public int Id { get; set; }
 
     // Optional mapping to an external user/doctor system
-    public string? UserId { get; set; }
-
-    [Required, MaxLength(100)]
-    public string FirstName { get; set; } = null!;
-
     [MaxLength(100)]
-    public string? LastName { get; set; }
+    public string? UserId { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 
     public Gender Gender { get; set; } = Gender.Unknown;
 
+    [MaxLength(3)]
+    public string? BloodType { get; set; }
+
     [MaxLength(50)]
     public string? Phone { get; set; }
 
-    [EmailAddress, MaxLength(200)]
-    public string? Email { get; set; }
+    [MaxLength(300)]
+    public string? Address { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [MaxLength(50)]
+    public string? RoleName { get; set; }
 
     public ICollection<MedicalHistory> MedicalHistories { get; set; } = new List<MedicalHistory>();
-    public ICollection<PatientAttachment> Attachments { get; set; } = new List<PatientAttachment>();
 }
