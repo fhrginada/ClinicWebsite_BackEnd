@@ -1,17 +1,10 @@
-### Build outputs
-/bin/
-/obj/
+# Build results
+bin/
+obj/
+
+# Visual Studio
 .vs/
 
-### User uploads and generated content
-/wwwroot/uploads/
-
-### VS Code
-.vscode/
-
-### Logs
-*.log
-
-### OS files
-.DS_Store
-Thumbs.db
+# User-specific files
+*.user
+*.suo
