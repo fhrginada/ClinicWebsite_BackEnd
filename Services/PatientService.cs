@@ -1,0 +1,109 @@
+using Microsoft.EntityFrameworkCore;
+using PatientApi.Data;
+using PatientApi.Models.Entities;
+using PatientApi.Services.Interfaces;
+using PatientApi.Repositories.Interfaces;
+using PatientApi.Models.ViewModels;
+
+namespace PatientApi.Services;
+
+public class PatientService : IPatientService
+{
+    private readonly IPatientRepository _repo;
+    public PatientService(IPatientRepository repo) => _repo = repo;
+
+    private static readonly HashSet<string> _validBloodTypes = new(new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" }, StringComparer.OrdinalIgnoreCase);
+
+    public async Task<(int total, List<PatientViewModel> items)> GetAsync(int? gender, int page, int pageSize)
+    {
+        var q = _repo.Query();
+        if (gender.HasValue) q = q.Where(p => (int)p.Gender == gender.Value);
+
+        var total = await q.CountAsync();
+        var list = await q.OrderBy(p => p.Id).Skip((page - 1) * pageSize).Take(pageSize).Include(p => p.MedicalHistories).ToListAsync();
+
+        // remove back-references to avoid JSON cycles
+        foreach (var p in list)
+        {
+            foreach (var m in p.MedicalHistories) m.Patient = null;
+        }
+
+        var vm = list.Select(ViewModelMapper.ToViewModel).ToList();
+        return (total, vm);
+    }
+
+    public async Task<PatientViewModel?> GetByIdAsync(int id)
+    {
+        var p = await _repo.Query().Include(x => x.MedicalHistories).FirstOrDefaultAsync(x => x.Id == id);
+        if (p == null) return null;
+        foreach (var m in p.MedicalHistories) m.Patient = null;
+        return ViewModelMapper.ToViewModel(p);
+    }
+
+    public async Task<PatientViewModel> CreateAsync(Patient dto)
+    {
+        // Domain validation
+        var today = DateTime.UtcNow.Date;
+        if (dto.DateOfBirth >= today) throw new ArgumentException("DateOfBirth must be in the past");
+        var age = today.Year - dto.DateOfBirth.Year - (dto.DateOfBirth.Date > today.AddYears(- (today.Year - dto.DateOfBirth.Year)) ? 1 : 0);
+        if (age <= 0 || age > 150) throw new ArgumentException("Invalid age");
+        if (dto.Gender == PatientApi.Models.Entities.Gender.Unknown) throw new ArgumentException("Gender must be Male, Female or Other");
+        var normalizedBloodType = NormalizeBloodType(dto.BloodType);
+
+        var p = new Patient
+        {
+            UserId = dto.UserId,
+            DateOfBirth = dto.DateOfBirth,
+            Gender = dto.Gender,
+            BloodType = normalizedBloodType,
+            Phone = dto.Phone,
+            Address = dto.Address,
+            RoleName = dto.RoleName,
+        };
+        await _repo.AddAsync(p);
+        await _repo.SaveChangesAsync();
+
+        p.MedicalHistories = new List<MedicalHistory>();
+        return ViewModelMapper.ToViewModel(p);
+    }
+
+    public async Task<bool> UpdateAsync(int id, Patient dto)
+    {
+        var p = await _repo.FindAsync(id);
+        if (p == null) return false;
+        // Domain validation
+        var today = DateTime.UtcNow.Date;
+        if (dto.DateOfBirth >= today) throw new ArgumentException("DateOfBirth must be in the past");
+        var age = today.Year - dto.DateOfBirth.Year - (dto.DateOfBirth.Date > today.AddYears(- (today.Year - dto.DateOfBirth.Year)) ? 1 : 0);
+        if (age <= 0 || age > 150) throw new ArgumentException("Invalid age");
+        if (dto.Gender == PatientApi.Models.Entities.Gender.Unknown) throw new ArgumentException("Gender must be Male, Female or Other");
+        var normalizedBloodType = NormalizeBloodType(dto.BloodType);
+
+        p.DateOfBirth = dto.DateOfBirth;
+        p.Gender = dto.Gender;
+        p.BloodType = normalizedBloodType;
+        p.Phone = dto.Phone;
+        p.Address = dto.Address;
+        p.RoleName = dto.RoleName;
+        p.UserId = dto.UserId;
+        await _repo.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var p = await _repo.FindAsync(id);
+        if (p == null) return false;
+        _repo.Remove(p);
+        await _repo.SaveChangesAsync();
+        return true;
+    }
+
+    private static string? NormalizeBloodType(string? bloodType)
+    {
+        if (string.IsNullOrWhiteSpace(bloodType)) return null;
+        var normalized = bloodType.Trim().ToUpperInvariant();
+        if (!_validBloodTypes.Contains(normalized)) throw new ArgumentException("Invalid blood type");
+        return normalized;
+    }
+}

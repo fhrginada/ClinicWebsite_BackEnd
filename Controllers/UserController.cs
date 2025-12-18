@@ -87,7 +87,7 @@ namespace Clinical_project.Controllers.Auth
             {
                 Token = jwtToken,
                 RefreshToken = refreshToken
-            }); // [9]
+            }); 
         }
 
         
@@ -146,13 +146,13 @@ namespace Clinical_project.Controllers.Auth
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrEmpty(email))
-                return Unauthorized("Email claim missing."); // [19]
+                return Unauthorized("Email claim missing."); 
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return NotFound();
 
-            return Ok(new { user.Id, user.Email, user.FullName, user.Gender, user.BirthDate }); // [19]
+            return Ok(new { user.Id, user.Email, user.FullName, user.Gender, user.BirthDate }); 
         }
     }
 }

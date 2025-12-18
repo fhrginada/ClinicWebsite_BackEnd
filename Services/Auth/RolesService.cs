@@ -17,7 +17,7 @@ namespace Clinical_project.Services.Auth
             _userManager = userManager;
         }
 
-        // 1. استرداد جميع الأدوار
+
         public List<string> GetAllRoles()
         {
             var roles = new List<string>();
@@ -28,11 +28,11 @@ namespace Clinical_project.Services.Auth
             return roles;
         }
 
-        // 2. تعيين دور لمستخدم
+
         public async Task<IdentityResult> AssignRoleToUser(string userId, string roleName)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            // الأدوار هي: Admin, Doctor, Nurse (مزروعة في Source [8])
+            
             if (user == null || !await _roleManager.RoleExistsAsync(roleName))
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User or Role not found." });

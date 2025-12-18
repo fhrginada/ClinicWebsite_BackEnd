@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Visual Studio
 .vs/
 bin/
@@ -9,3 +10,15 @@ obj/
 
 # Logs
 *.log
+=======
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# User-specific files
+*.user
+*.suo
+>>>>>>> origin/main

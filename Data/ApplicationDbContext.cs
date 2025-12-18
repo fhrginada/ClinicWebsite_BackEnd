@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Clinical_project.Models;
-using Clinical_project.Models.Entities; // ⬅️ 1. يجب التأكد من وجود هذا السطر
+using Clinical_project.Models.Entities; 
 
 namespace Clinical_project.Data
 {
@@ -12,10 +12,12 @@ namespace Clinical_project.Data
         {
         }
 
-        // كيان المريض (Patient)
+        
         public DbSet<Patient> Patients { get; set; }
 
-        // ⬅️ 2. يجب التأكد من وجود هذا السطر لمهام العضو 1
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Nurse> Nurses { get; set; }
+
         public DbSet<SystemSettings> SystemSettings { get; set; }
     }
 }
