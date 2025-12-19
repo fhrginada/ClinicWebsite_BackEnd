@@ -2,11 +2,29 @@
 
 namespace PatientApi.Controllers
 {
-    public class NotificationsController : Controller
+    [ApiController]
+    [Route("api/notifications")]
+    public class NotificationsController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly INotificationService _service;
+
+        public NotificationsController(INotificationService service)
         {
-            return View();
+            _service = service;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserNotifications(int userId)
+        {
+            return Ok(await _service.GetUserNotificationsAsync(userId));
+        }
+
+        [HttpPost("{notificationId}/read")]
+        public async Task<IActionResult> MarkAsRead(int notificationId)
+        {
+            await _service.MarkAsReadAsync(notificationId);
+            return NoContent();
         }
     }
+
 }
