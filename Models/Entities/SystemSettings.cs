@@ -1,31 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using ClinicalProject_API.Data;
 
-namespace Clinical_project.Models.Entities
+
+namespace PatientApi.Models.Entities
+
 {
     public class SystemSettings
     {
-        // =========================
-        // من الكود الأول (Clinical_project)
-        // =========================
-        [Key]
-        public int Id { get; set; } = 1;
-
-        [Required]
-        public string PlatformName { get; set; } = "Clinical Project System";
-
-        [Required]
-        public string TimeZoneId { get; set; } = "Egypt Standard Time";
-
-        public int DefaultConsultationDurationMinutes { get; set; } = 30;
-
-        public string SupportEmail { get; set; } = "support@clinical.com";
-
-        // =========================
-        // من الكود الثاني (ClinicalProject_API)
-        // =========================
-        [Key] // يمكن استخدام مفتاح مركب أو ترك المفتاح الأول فقط، لكن هنا هنحتفظ بالـ Key المختلف باسم مختلف لتجنب التعارض
+        
+        [Key] 
         public int ClinicSettingsId { get; set; }
 
         [Required, StringLength(100)]

@@ -1,8 +1,8 @@
-﻿using ClinicalProject_API.Models.ViewModels.NurseVM;
-using ClinicalProject_API.Services.Interfaces;
+﻿using PatientApi.Models.ViewModels.NurseVM;
+using PatientApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ClinicalProject_API.Controllers
+namespace PatientApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

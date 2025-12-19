@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Visual Studio
 .vs/
 bin/
@@ -11,14 +10,20 @@ obj/
 # Logs
 *.log
 =======
-# Build results
-bin/
-obj/
-
-# Visual Studio
+### Build outputs
+/bin/
+/obj/
 .vs/
 
-# User-specific files
-*.user
-*.suo
->>>>>>> origin/main
+### User uploads and generated content
+/wwwroot/uploads/
+
+### VS Code
+.vscode/
+
+### Logs
+*.log
+
+### OS files
+.DS_Store
+Thumbs.db
