@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ClinicBackend_Final.Data;
+using Microsoft.EntityFrameworkCore;
+using PatientApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,44 +10,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// =========================
-// Repositories
-// =========================
-builder.Services.AddScoped<ClinicBackend_Final.Repositories.Interfaces.IPatientRepository,
-                          ClinicBackend_Final.Repositories.PatientRepository>();
+// Register services
+// repositories
+builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IPatientRepository, PatientApi.Repositories.PatientRepository>();
+builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IMedicalHistoryRepository, PatientApi.Repositories.MedicalHistoryRepository>();
 
-builder.Services.AddScoped<ClinicBackend_Final.Repositories.Interfaces.IMedicalHistoryRepository,
-                          ClinicBackend_Final.Repositories.MedicalHistoryRepository>();
-
-// 🔴 Prescription System
-builder.Services.AddScoped<ClinicBackend_Final.Repositories.Interfaces.IPrescriptionRepository,
-                          ClinicBackend_Final.Repositories.PrescriptionRepository>();
-
-builder.Services.AddScoped<ClinicBackend_Final.Repositories.Interfaces.IMedicationRepository,
-                          ClinicBackend_Final.Repositories.MedicationRepository>();
-
-// =========================
-// Services
-// =========================
-builder.Services.AddScoped<ClinicBackend_Final.Services.Interfaces.IPatientService,
-                          ClinicBackend_Final.Services.PatientService>();
-
-builder.Services.AddScoped<ClinicBackend_Final.Services.Interfaces.IMedicalHistoryService,
-                          ClinicBackend_Final.Services.MedicalHistoryService>();
-
-// 🔴 Prescription System
-builder.Services.AddScoped<ClinicBackend_Final.Services.Interfaces.IPrescriptionService,
-                          ClinicBackend_Final.Services.PrescriptionService>();
-
-builder.Services.AddScoped<ClinicBackend_Final.Services.Interfaces.IMedicationService,
-                          ClinicBackend_Final.Services.MedicationService>();
-
-builder.Services.AddScoped<ClinicBackend_Final.Services.Interfaces.IPdfExportService,
-                          ClinicBackend_Final.Services.PdfExportService>();
+// services
+builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientService, PatientApi.Services.PatientService>();
+builder.Services.AddScoped<PatientApi.Services.Interfaces.IMedicalHistoryService, PatientApi.Services.MedicalHistoryService>();
 
 var app = builder.Build();
 
-// Apply pending migrations
+// Apply pending EF Core migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -62,5 +36,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
