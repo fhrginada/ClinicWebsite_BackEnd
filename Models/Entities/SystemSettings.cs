@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using ClinicalProject_API.Data;
 
-namespace ClinicalProject_API.Models.Entities
+
+namespace PatientApi.Models.Entities
 
 {
     public class SystemSettings

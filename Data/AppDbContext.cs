@@ -11,6 +11,17 @@ namespace PatientApi.Data
         public DbSet<Patient> Patients { get; set; } = null!;
         public DbSet<MedicalHistory> MedicalHistories { get; set; } = null!;
 
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Nurse> Nurses { get; set; }
+
+       
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Consultation> Consultations { get; set; }
+
+        
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
+        public DbSet<NurseSchedule> NurseSchedules { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Patient>(b =>
