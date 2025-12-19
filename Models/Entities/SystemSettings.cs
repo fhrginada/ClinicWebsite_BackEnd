@@ -6,9 +6,7 @@ namespace Clinical_project.Models.Entities
 {
     public class SystemSettings
     {
-        // =========================
-        // من الكود الأول (Clinical_project)
-        // =========================
+        
         [Key]
         public int Id { get; set; } = 1;
 
@@ -22,10 +20,8 @@ namespace Clinical_project.Models.Entities
 
         public string SupportEmail { get; set; } = "support@clinical.com";
 
-        // =========================
-        // من الكود الثاني (ClinicalProject_API)
-        // =========================
-        [Key] // يمكن استخدام مفتاح مركب أو ترك المفتاح الأول فقط، لكن هنا هنحتفظ بالـ Key المختلف باسم مختلف لتجنب التعارض
+        
+        [Key] 
         public int ClinicSettingsId { get; set; }
 
         [Required, StringLength(100)]
