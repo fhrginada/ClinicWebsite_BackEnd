@@ -19,8 +19,11 @@ jobs:
         dotnet-version: '8.0.*'
  
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore PatientApi.sln
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build PatientApi.sln --no-restore
+
     - name: Run Tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test PatientApi.sln --no-build --verbosity normal
+
