@@ -1,12 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PatientApi.Services.Interfaces;
 
 namespace PatientApi.Controllers
 {
-    public class ReportsController : Controller
+    [ApiController]
+    [Route("api/reports")]
+    public class ReportsController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IReportService _service;
+
+        public ReportsController(IReportService service)
         {
-            return View();
+            _service = service;
+        }
+
+        [HttpGet("daily")]
+        public async Task<IActionResult> Daily([FromQuery] DateTime date)
+        {
+            return Ok(await _service.GetDailyStatsAsync(date));
+        }
+
+        [HttpGet("monthly")]
+        public async Task<IActionResult> Monthly(int year, int month)
+        {
+            return Ok(await _service.GetMonthlyStatsAsync(year, month));
         }
     }
+
 }

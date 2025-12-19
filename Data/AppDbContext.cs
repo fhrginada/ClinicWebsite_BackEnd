@@ -99,7 +99,7 @@ namespace PatientApi.Data
             // =========================
             modelBuilder.Entity<Doctor>(b =>
             {
-                b.HasKey(d => d.Id);
+                b.HasKey(d => d.DoctorId);
 
                 b.HasMany(d => d.Schedules)
                     .WithOne(s => s.Doctor)
@@ -117,7 +117,7 @@ namespace PatientApi.Data
             // =========================
             modelBuilder.Entity<Nurse>(b =>
             {
-                b.HasKey(n => n.Id);
+                b.HasKey(n => n.NurseId);
 
                 b.HasMany(n => n.Schedules)
                     .WithOne(s => s.Nurse)
@@ -170,11 +170,10 @@ namespace PatientApi.Data
             // =========================
             modelBuilder.Entity<AuditLog>(b =>
             {
-                b.HasKey(a => a.Id);
+                b.HasKey(a => a.AuditLogId);
 
                 b.Property(a => a.Action).HasMaxLength(200);
-                b.Property(a => a.EntityName).HasMaxLength(200);
-                b.Property(a => a.EntityId).HasMaxLength(100);
+              
             });
         }
     }

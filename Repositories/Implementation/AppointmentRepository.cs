@@ -7,9 +7,9 @@ namespace PatientApi.Repositories.Implementations
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly ClinicalDbContext _context;
+        private readonly AppDbContext _context;
 
-        public AppointmentRepository(ClinicalDbContext context)
+        public AppointmentRepository(AppDbContext context)
         {
             _context = context;
         }

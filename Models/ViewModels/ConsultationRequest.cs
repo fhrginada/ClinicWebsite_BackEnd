@@ -35,7 +35,7 @@ namespace PatientApi.Models.ViewModels
         [MaxLength(500)]
         public string Notes { get; set; }
 
-        public PatientRequest? Patient { get; set; }
+        
 
     }
 }
