@@ -43,7 +43,7 @@ public class MedicalHistoriesController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (vm.DateRecorded > DateTime.UtcNow) return BadRequest("DateRecorded cannot be in the future");
         var temp = new MedicalHistory();
-        InputMapper.ApplyUpdate(vm, temp);
+        InputMapper.ApplyUpdate(temp, vm);
         var ok = await _service.UpdateAsync(id, temp);
         if (!ok) return NotFound();
         return NoContent();

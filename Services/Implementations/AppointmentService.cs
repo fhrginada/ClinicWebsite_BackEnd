@@ -51,7 +51,7 @@ namespace PatientApi.Services.Implementations
                 DoctorId = a.DoctorId,
                 PatientId = a.PatientId,
                 DoctorName = a.Doctor?.FullName,
-                PatientName = a.Patient?.FullName,
+                PatientName = a.Patient.User != null ? a.Patient.User.UserName : "",
                 AppointmentDate = a.AppointmentDate,
                 TimeSlot = a.TimeSlot,
                 Status = a.Status.ToString(),

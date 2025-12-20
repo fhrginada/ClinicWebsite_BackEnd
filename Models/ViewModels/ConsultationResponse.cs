@@ -1,6 +1,6 @@
 using System;
 
-namespace   PatientApi.Models.ViewModels
+namespace PatientApi.Models.ViewModels
 {
     public class ConsultationResponse
     {

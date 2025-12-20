@@ -51,7 +51,7 @@ public class PatientsController : ControllerBase
         {
             // Create a temporary entity and apply updates, service will persist
             var temp = new Patient();
-            InputMapper.ApplyUpdate(vm, temp);
+            InputMapper.ApplyUpdate(temp, vm);
             var ok = await _service.UpdateAsync(id, temp);
             return ok ? NoContent() : NotFound();
         }

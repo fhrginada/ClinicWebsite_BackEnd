@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PatientApi.Models.ViewModels;
+namespace PatientApi.Models.ViewModels{
 
 public class MedicalHistoryUpdateViewModel
 {
@@ -16,4 +16,5 @@ public class MedicalHistoryUpdateViewModel
 
     [MaxLength(1000)]
     public string? AttachmentUrl { get; set; }
+}
 }
