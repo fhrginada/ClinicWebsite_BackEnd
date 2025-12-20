@@ -1,4 +1,4 @@
-namespace PatientApi.Models.ViewModels;
+namespace PatientApi.Models.ViewModels{
 
 public class MedicalHistoryViewModel
 {
@@ -10,4 +10,5 @@ public class MedicalHistoryViewModel
     public string? Diagnosis { get; set; }
     public string? Treatment { get; set; }
     public string? AttachmentUrl { get; set; }
+}
 }

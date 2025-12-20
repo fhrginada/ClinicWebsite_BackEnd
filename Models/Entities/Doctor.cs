@@ -28,6 +28,6 @@ namespace PatientApi.Models.Entities
 
         public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-        public ICollection<Prescription> PrescriptionsIssued { get; set; } = new List<Prescription>();
+        
     }
 }

@@ -1,8 +1,8 @@
-﻿using ClinicalProject_API.Models.Entities;
-using ClinicalProject_API.Services.Interfaces;
+﻿using PatientApi.Models.Entities;
+using PatientApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ClinicalProject_API.Controllers
+namespace PatientApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

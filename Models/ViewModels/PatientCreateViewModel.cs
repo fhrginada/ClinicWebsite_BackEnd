@@ -1,7 +1,11 @@
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.ComponentModel.DataAnnotations;    
 using PatientApi.Models.Entities;
 
-namespace PatientApi.Models.ViewModels;
+
+
+
+namespace PatientApi.Models.ViewModels{
 
 public class PatientCreateViewModel
 {
@@ -24,6 +28,6 @@ public class PatientCreateViewModel
     [MaxLength(50)]
     public string? RoleName { get; set; }
 
-    [MaxLength(100)]
-    public string? UserId { get; set; }
+    public int? UserId { get; set; }
+}
 }
