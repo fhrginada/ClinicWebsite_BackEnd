@@ -31,8 +31,9 @@ namespace PatientApi.Services.Implementations
             return new DoctorResponse
             {
                 DoctorId = doctor.DoctorId,
-                FullName = doctor.FullName,
-                Specialty = doctor.Specialty
+                FullName = doctor.FullName ?? string.Empty,
+                Specialty = doctor.Specialty ?? string.Empty,
+                UserId = doctor.UserId
             };
         }
 
@@ -43,12 +44,13 @@ namespace PatientApi.Services.Implementations
             return doctors.Select(d => new DoctorResponse
             {
                 DoctorId = d.DoctorId,
-                FullName = d.FullName,
-                Specialty = d.Specialty
+                FullName = d.FullName ?? string.Empty,
+                Specialty = d.Specialty ?? string.Empty,
+                UserId = d.UserId
             });
         }
 
-        public async Task<DoctorResponse> GetDoctorByIdAsync(int id)
+        public async Task<DoctorResponse?> GetDoctorByIdAsync(int id)
         {
             var doctor = await _repo.GetByIdAsync(id);
             if (doctor == null)
@@ -57,8 +59,9 @@ namespace PatientApi.Services.Implementations
             return new DoctorResponse
             {
                 DoctorId = doctor.DoctorId,
-                FullName = doctor.FullName,
-                Specialty = doctor.Specialty
+                FullName = doctor.FullName ?? string.Empty,
+                Specialty = doctor.Specialty ?? string.Empty,
+                UserId = doctor.UserId
             };
         }
 

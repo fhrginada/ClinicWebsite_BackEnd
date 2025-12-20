@@ -40,18 +40,62 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 
-    // Seed minimal data for quick testing if database is empty
+    // Seed sample data for quick testing if database is empty
     if (!db.Patients.Any())
     {
-        db.Patients.Add(new Patient
+        var patients = new[]
         {
-            DateOfBirth = DateTime.UtcNow.AddYears(-25),
-            Gender = Gender.Male,
-            BloodType = "O+",
-            Phone = "0123456789",
-            Address = "Seeded Patient",
-            RoleName = "Patient"
-        });
+            new Patient
+            {
+                DateOfBirth = DateTime.UtcNow.AddYears(-25),
+                Gender = Gender.Male,
+                BloodType = "O+",
+                Phone = "0123456789",
+                Address = "Cairo, Egypt",
+                RoleName = "Patient"
+            },
+            new Patient
+            {
+                DateOfBirth = DateTime.UtcNow.AddYears(-30),
+                Gender = Gender.Female,
+                BloodType = "A+",
+                Phone = "0987654321",
+                Address = "Alexandria, Egypt",
+                RoleName = "Patient"
+            },
+            new Patient
+            {
+                DateOfBirth = DateTime.UtcNow.AddYears(-35),
+                Gender = Gender.Male,
+                BloodType = "B+",
+                Phone = "0501234567",
+                Address = "Giza, Egypt",
+                RoleName = "Patient"
+            },
+            new Patient
+            {
+                DateOfBirth = DateTime.UtcNow.AddYears(-28),
+                Gender = Gender.Female,
+                BloodType = "AB+",
+                Phone = "0556789012",
+                Address = "Helwan, Egypt",
+                RoleName = "Patient"
+            },
+            new Patient
+            {
+                DateOfBirth = DateTime.UtcNow.AddYears(-45),
+                Gender = Gender.Male,
+                BloodType = "O-",
+                Phone = "0611223344",
+                Address = "Zamalek, Cairo",
+                RoleName = "Patient"
+            }
+        };
+
+        foreach (var patient in patients)
+        {
+            db.Patients.Add(patient);
+        }
         db.SaveChanges();
     }
 }

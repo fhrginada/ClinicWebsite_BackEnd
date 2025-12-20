@@ -68,4 +68,13 @@ public class PatientsController : ControllerBase
         if (!ok) return NotFound();
         return NoContent();
     }
+
+    [HttpGet("dashboard")]
+    [HttpGet("dashboard/{patientId:int}")]
+    public async Task<IActionResult> GetDashboard(int patientId)
+    {
+        var dashboard = await _service.GetDashboardAsync(patientId);
+        if (dashboard == null) return NotFound();
+        return Ok(dashboard);
+    }
 }

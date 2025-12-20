@@ -5,14 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace PatientApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/doctors")]
     public class DoctorController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
+        private readonly IDoctorScheduleService _scheduleService;
 
-        public DoctorController(IDoctorService doctorService)
+        public DoctorController(IDoctorService doctorService, IDoctorScheduleService scheduleService)
         {
             _doctorService = doctorService;
+            _scheduleService = scheduleService;
         }
 
         // POST: api/Doctor
@@ -62,6 +64,14 @@ namespace PatientApi.Controllers
                 return NotFound("Doctor not found");
 
             return Ok("Doctor deleted successfully");
+        }
+
+        [HttpGet("{id:int}/availability")]
+        public async Task<IActionResult> GetAvailability(int id, [FromQuery] DateTime? startDate = null, [FromQuery] int days = 7)
+        {
+            var availability = await _scheduleService.GetDoctorAvailabilityAsync(id, startDate, days);
+            if (availability == null) return NotFound("Doctor not found");
+            return Ok(availability);
         }
     }
 }

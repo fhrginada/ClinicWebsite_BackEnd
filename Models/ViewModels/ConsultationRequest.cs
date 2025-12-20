@@ -11,20 +11,20 @@ namespace PatientApi.Models.ViewModels
 
         [Required]
         [MaxLength(1000)]
-        public string Symptoms { get; set; }
+        public string Symptoms { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(1000)]
-        public string Diagnosis { get; set; }
+        public string Diagnosis { get; set; } = string.Empty;
 
         [MaxLength(2000)]
-        public string Prescription { get; set; }
+        public string Prescription { get; set; } = string.Empty;
 
         [MaxLength(2000)]
-        public string TreatmentPlan { get; set; }
+        public string TreatmentPlan { get; set; } = string.Empty;
 
         [MaxLength(1000)]
-        public string FollowUpInstructions { get; set; }
+        public string FollowUpInstructions { get; set; } = string.Empty;
 
         public DateTime? FollowUpDate { get; set; }
 
@@ -33,7 +33,7 @@ namespace PatientApi.Models.ViewModels
         public decimal ConsultationFee { get; set; }
 
         [MaxLength(500)]
-        public string Notes { get; set; }
+        public string Notes { get; set; } = string.Empty;
 
         
 

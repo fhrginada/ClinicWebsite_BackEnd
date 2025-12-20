@@ -35,5 +35,13 @@ namespace PatientApi.Controllers
             if (!result) return NotFound();
             return NoContent();
         }
+
+        [HttpGet("availability/{doctorId}")]
+        public async Task<IActionResult> GetAvailability(int doctorId, [FromQuery] DateTime? startDate = null, [FromQuery] int days = 7)
+        {
+            var availability = await _service.GetDoctorAvailabilityAsync(doctorId, startDate, days);
+            if (availability == null) return NotFound("Doctor not found");
+            return Ok(availability);
+        }
     }
 }

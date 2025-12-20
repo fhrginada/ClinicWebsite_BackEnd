@@ -3,8 +3,8 @@
     public class DoctorResponse
     {
         public int DoctorId { get; set; }
-        public string FullName { get; set; }
-        public string Specialty { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Specialty { get; set; } = string.Empty;
         public int UserId { get; set; }
     }
 }

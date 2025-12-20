@@ -5,7 +5,7 @@ using PatientApi.Models.ViewModels;
 using PatientApi.Models.Entities;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/medical-history")]
 public class MedicalHistoriesController : ControllerBase
 {
     private readonly PatientApi.Services.Interfaces.IMedicalHistoryService _service;
@@ -13,6 +13,13 @@ public class MedicalHistoriesController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] int? patientId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        var (total, items) = await _service.GetAsync(patientId, page, pageSize);
+        return Ok(new { total, page, pageSize, items });
+    }
+
+    [HttpGet("patient/{patientId:int}")]
+    public async Task<IActionResult> GetByPatient(int patientId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
         var (total, items) = await _service.GetAsync(patientId, page, pageSize);
         return Ok(new { total, page, pageSize, items });
