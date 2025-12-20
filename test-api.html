@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.secondary {
+            background-color: #2196F3;
+        }
+        button.secondary:hover {
+            background-color: #0b7dda;
+        }
+        .response {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+            min-height: 100px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Clinic API Tester</h1>
+
+        <div class="input-group">
+            <label for="baseUrl">Base URL:</label>
+            <input type="text" id="baseUrl" value="http://localhost:52134" placeholder="http://localhost:52134">
+        </div>
+
+        <div class="input-group">
+            <label>Quick Test Buttons:</label>
+            <button class="secondary" onclick="testGetPatients()">Test GET /api/patients</button>
+            <button class="secondary" onclick="testGetSwagger()">Test Swagger UI</button>
+            <button class="secondary" onclick="testHealth()">Test Health Check</button>
+        </div>
+
+        <hr>
+
+        <div class="input-group">
+            <label for="endpoint">Endpoint (without base URL):</label>
+            <input type="text" id="endpoint" value="/api/patients" placeholder="/api/patients">
+        </div>
+
+        <div class="input-group">
+            <label for="method">HTTP Method:</label>
+            <select id="method" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="body">Request Body (JSON - for POST/PUT):</label>
+            <textarea id="body" placeholder='{"dateOfBirth": "2000-01-01T00:00:00Z", "gender": 1, "bloodType": "O+", "phone": "0123456789", "address": "Test", "roleName": "Patient"}'></textarea>
+        </div>
+
+        <button onclick="sendRequest()">Send Request</button>
+        <button class="secondary" onclick="clearResponse()">Clear Response</button>
+
+        <div class="response" id="response">
+            <p style="color: #999;">Response will appear here...</p>
+        </div>
+    </div>
+
+    <script>
+        function getBaseUrl() {
+            return document.getElementById('baseUrl').value.replace(/\/$/, '');
+        }
+
+        function getFullUrl() {
+            return getBaseUrl() + document.getElementById('endpoint').value;
+        }
+
+        function displayStatus(message, isError = false, isLoading = false) {
+            const statusDiv = document.getElementById('response');
+            const className = isError ? 'error' : isLoading ? 'loading' : 'success';
+            statusDiv.innerHTML = `<div class="status ${className}">${message}</div>`;
+        }
+
+        function displayResponse(status, data, time) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = `
+                <div class="status success">
+                    ✓ Status: ${status} | Time: ${time}ms
+                </div>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        function displayError(error) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = `
+                <div class="status error">
+                    ✗ Error: ${error}
+                </div>
+            `;
+        }
+
+        async function sendRequest() {
+            const baseUrl = getBaseUrl();
+            const endpoint = document.getElementById('endpoint').value;
+            const method = document.getElementById('method').value;
+            const body = document.getElementById('body').value;
+            const fullUrl = baseUrl + endpoint;
+
+            displayStatus('Sending request...', false, true);
+
+            try {
+                const startTime = performance.now();
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (body && (method === 'POST' || method === 'PUT')) {
+                    options.body = body;
+                }
+
+                const response = await fetch(fullUrl, options);
+                const endTime = performance.now();
+                const time = Math.round(endTime - startTime);
+
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+
+                displayResponse(response.status, data, time);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function testGetPatients() {
+            document.getElementById('endpoint').value = '/api/patients';
+            document.getElementById('method').value = 'GET';
+            document.getElementById('body').value = '';
+            await sendRequest();
+        }
+
+        async function testHealth() {
+            document.getElementById('endpoint').value = '/';
+            document.getElementById('method').value = 'GET';
+            document.getElementById('body').value = '';
+            await sendRequest();
+        }
+
+        function testGetSwagger() {
+            window.open(getBaseUrl().replace('52134', '52133') + '/swagger', '_blank');
+        }
+
+        function clearResponse() {
+            document.getElementById('response').innerHTML = '<p style="color: #999;">Response will appear here...</p>';
+        }
+
+        // Allow Enter key to send request
+        document.addEventListener('keypress', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendRequest();
+            }
+        });
+    </script>
+</body>
+</html>

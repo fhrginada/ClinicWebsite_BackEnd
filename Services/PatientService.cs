@@ -9,7 +9,15 @@ namespace PatientApi.Services;
 public class PatientService : IPatientService
 {
     private readonly IPatientRepository _repo;
-    public PatientService(IPatientRepository repo) => _repo = repo;
+    private readonly IAppointmentRepository _appointmentRepo;
+    private readonly INotificationRepository _notificationRepo;
+
+    public PatientService(IPatientRepository repo, IAppointmentRepository appointmentRepo, INotificationRepository notificationRepo)
+    {
+        _repo = repo;
+        _appointmentRepo = appointmentRepo;
+        _notificationRepo = notificationRepo;
+    }
 
     private static readonly HashSet<string> _validBloodTypes = new(new[] 
     { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" }, StringComparer.OrdinalIgnoreCase);
@@ -110,5 +118,61 @@ public class PatientService : IPatientService
         var normalized = bloodType.Trim().ToUpperInvariant();
         if (!_validBloodTypes.Contains(normalized)) throw new ArgumentException("Invalid blood type");
         return normalized;
+    }
+
+    public async Task<PatientDashboardResponse?> GetDashboardAsync(int patientId)
+    {
+        var patient = await GetByIdAsync(patientId);
+        if (patient == null) return null;
+
+        var allAppointments = await _appointmentRepo.GetAllAsync();
+        var upcomingAppointments = allAppointments
+            .Where(a => a.PatientId == patientId && a.AppointmentDate >= DateTime.UtcNow)
+            .OrderBy(a => a.AppointmentDate)
+            .Take(5)
+            .Select(a => new AppointmentResponse
+            {
+                Id = a.AppointmentId,
+                PatientId = a.PatientId,
+                PatientName = a.Patient?.RoleName ?? string.Empty,
+                PatientEmail = a.Patient?.User?.Email ?? string.Empty,
+                PatientPhone = a.Patient?.Phone ?? string.Empty,
+                DoctorId = a.DoctorId,
+                DoctorName = a.Doctor?.FullName ?? string.Empty,
+                DoctorSpecialization = a.Doctor?.Specialty ?? string.Empty,
+                AppointmentDate = a.AppointmentDate,
+                TimeSlot = a.TimeSlot,
+                Status = a.Status.ToString(),
+                ReasonForVisit = a.ReasonForVisit,
+                Notes = a.Notes ?? string.Empty,
+                CreatedAt = a.CreatedAt,
+                HasConsultation = a.Consultation != null
+            })
+            .ToList();
+
+        var notificationResponses = new List<NotificationResponse>();
+        if (patient.UserId.HasValue)
+        {
+            var notifications = await _notificationRepo.GetByUserIdAsync(patient.UserId.Value);
+            notificationResponses = notifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(10)
+                .Select(n => new NotificationResponse
+                {
+                    Id = n.NotificationId,
+                    Title = n.Title,
+                    Message = n.Message,
+                    IsRead = n.IsRead,
+                    CreatedAt = n.CreatedAt
+                })
+                .ToList();
+        }
+
+        return new PatientDashboardResponse
+        {
+            PatientInfo = patient,
+            UpcomingAppointments = upcomingAppointments,
+            Notifications = notificationResponses
+        };
     }
 }

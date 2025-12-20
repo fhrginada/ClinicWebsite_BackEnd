@@ -6,6 +6,8 @@ namespace PatientApi.Models.ViewModels
     {
         public int Id { get; set; }
         public int AppointmentId { get; set; }
+        public int PatientId { get; set; }
+        public int DoctorId { get; set; }
         public DateTime ConsultationDate { get; set; }
         public required string Symptoms { get; set; }
         public required string Diagnosis { get; set; }

@@ -6,5 +6,7 @@ namespace PatientApi.Repositories.Interfaces
     {
         Task AddAsync(Consultation consultation);
         Task<Consultation?> GetByAppointmentIdAsync(int appointmentId);
+        Task<Consultation?> GetByIdAsync(int consultationId);
+        Task<bool> UpdateAsync(Consultation consultation);
     }
 }
