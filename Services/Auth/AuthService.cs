@@ -3,6 +3,7 @@ using Clinical_project.Models.ViewModels.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using PatientApi.Models.Entities;
 
 namespace Clinical_project.Services.Auth
 {

@@ -7,6 +7,7 @@ using PatientApi.Data;
 using PatientApi.Models.ViewModels;
 using PatientApi.Models.Entities;
 
+
 namespace Clinical_project.Controllers
 {
     [Route("api/[controller]")]
@@ -14,10 +15,10 @@ namespace Clinical_project.Controllers
     [Authorize] 
     public class PatientsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
         private readonly PatientApi.Services.Interfaces.IPatientService _service;
 
-        public PatientsController(ApplicationDbContext context,
+        public PatientsController(AppDbContext context,
                                   PatientApi.Services.Interfaces.IPatientService service)
         {
             _context = context;

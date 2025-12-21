@@ -1,24 +1,26 @@
-﻿using Clinical_project.Data;
-using Clinical_project.Models.Entities; 
+﻿using Clinical_project.Models.Entities; 
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using PatientApi.Data;
+using Clinical_project.Services.Settings;
+using PatientApi.Models.Entities;
 
 namespace Clinical_project.Services.Settings
 {
-    // 🆕 خدمة إعدادات النظام (System Settings Service)
+   
     public class SettingsService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public SettingsService(ApplicationDbContext context)
+        public SettingsService(AppDbContext context)
         {
             _context = context;
         }
 
-        // 1. استرداد إعدادات النظام (يجب أن يوجد إعداد واحد فقط بالـ ID=1)
+        
         public async Task<SystemSettings> GetSettingsAsync()
         {
-            // محاولة الحصول على الإعدادات، أو إنشاء إعدادات افتراضية إذا كانت غير موجودة
+
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
 
             if (settings == null)

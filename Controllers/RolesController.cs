@@ -3,13 +3,13 @@ using Clinical_project.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using PatientApi.Models.Entities;
+
 
 namespace Clinical_project.Controllers.Auth
 {
-   
     [ApiController]
     [Route("api/[controller]")]
-   
     [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
@@ -36,6 +36,7 @@ namespace Clinical_project.Controllers.Auth
             {
                 return BadRequest(result.Errors);
             }
+
             return Ok($"Role {request.RoleName} assigned to user {request.UserId} successfully.");
         }
     }

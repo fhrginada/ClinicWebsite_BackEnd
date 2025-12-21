@@ -1,100 +1,51 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ClinicBackend_Final.Models.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using PatientApi.Models.Entities;
+using Clinical_project.Models.Entities;
 
-namespace ClinicBackend_Final.Data
+
+namespace PatientApi.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext
+        : IdentityDbContext<User, IdentityRole<string>, string>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
 
-        // Existing
+        // =========================
+        // DbSets
+        // =========================
         public DbSet<Patient> Patients { get; set; } = null!;
+        public DbSet<Doctor> Doctors { get; set; } = null!;
+        public DbSet<Nurse> Nurses { get; set; } = null!;
         public DbSet<MedicalHistory> MedicalHistories { get; set; } = null!;
-
-        // 🔴 Prescription System 
-        public DbSet<Prescription> Prescriptions { get; set; } = null!;
-        public DbSet<PrescriptionItem> PrescriptionItems { get; set; } = null!;
-        public DbSet<Medication> Medications { get; set; } = null!;
-        public DbSet<DigitalSignatureToken> DigitalSignatureTokens { get; set; } = null!;
+        public DbSet<Appointment> Appointments { get; set; } = null!;
+        public DbSet<Consultation> Consultations { get; set; } = null!;
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; } = null!;
+        public DbSet<NurseSchedule> NurseSchedules { get; set; } = null!;
+        public DbSet<Notification> Notifications { get; set; } = null!;
+        public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+        public DbSet<SystemSettings> SystemSettings { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // =========================
-            // Patient
-            // =========================
-            modelBuilder.Entity<Patient>(b =>
-            {
-                b.HasKey(p => p.Id);
-                b.Property(p => p.UserId).HasMaxLength(100);
-                b.Property(p => p.BloodType).HasMaxLength(20);
-                b.Property(p => p.Phone).HasMaxLength(50);
-                b.Property(p => p.Address).HasMaxLength(500);
-                b.Property(p => p.RoleName).HasMaxLength(100);
+            base.OnModelCreating(modelBuilder);
 
-                b.HasMany(p => p.MedicalHistories)
-                 .WithOne(m => m.Patient!)
-                 .HasForeignKey(m => m.PatientId)
-                 .OnDelete(DeleteBehavior.Cascade);
-            });
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.PatientProfile)
+                .WithOne(p => p.User)
+                .HasForeignKey<Patient>(p => p.UserId);
 
-            // =========================
-            // MedicalHistory
-            // =========================
-            modelBuilder.Entity<MedicalHistory>(b =>
-            {
-                b.HasKey(m => m.Id);
-                b.Property(m => m.Diagnosis).HasMaxLength(1000);
-                b.Property(m => m.Treatment).HasMaxLength(2000);
-                b.Property(m => m.AttachmentUrl).HasMaxLength(1000);
-            });
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.DoctorProfile)
+                .WithOne(d => d.User)
+                .HasForeignKey<Doctor>(d => d.UserId);
 
-            // =========================
-            // Prescription
-            // =========================
-            modelBuilder.Entity<Prescription>(b =>
-            {
-                b.HasKey(p => p.Id);
-                b.Property(p => p.Status).HasMaxLength(50);
-
-                b.HasMany(p => p.Items)
-                 .WithOne(i => i.Prescription!)
-                 .HasForeignKey(i => i.PrescriptionId)
-                 .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasMany(p => p.Tokens)
-                 .WithOne(t => t.Prescription!)
-                 .HasForeignKey(t => t.PrescriptionId)
-                 .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // =========================
-            // PrescriptionItem
-            // =========================
-            modelBuilder.Entity<PrescriptionItem>(b =>
-            {
-                b.HasKey(i => i.Id);
-                b.Property(i => i.Dose).HasMaxLength(100);
-                b.Property(i => i.Frequency).HasMaxLength(100);
-            });
-
-            // =========================
-            // Medication
-            // =========================
-            modelBuilder.Entity<Medication>(b =>
-            {
-                b.HasKey(m => m.Id);
-                b.Property(m => m.Name).HasMaxLength(200);
-                b.Property(m => m.Strength).HasMaxLength(100);
-            });
-
-            // =========================
-            // DigitalSignatureToken
-            // =========================
-            modelBuilder.Entity<DigitalSignatureToken>(b =>
-            {
-                b.HasKey(t => t.Id);
-                b.Property(t => t.Token).HasMaxLength(500);
-            });
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.NurseProfile)
+                .WithOne(n => n.User)
+                .HasForeignKey<Nurse>(n => n.UserId);
         }
     }
 }

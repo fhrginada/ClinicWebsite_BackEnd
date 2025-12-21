@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Clinical_project.Models.ViewModels.Auth;
+using PatientApi.Models.Entities;
 
 namespace Clinical_project.Controllers.Auth
 {
@@ -92,14 +93,14 @@ namespace Clinical_project.Controllers.Auth
 
         
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request) // مطلوب لـ Member 1 [1]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request) 
         {
             if (request == null || string.IsNullOrEmpty(request.RefreshToken))
             {
                 return BadRequest("Refresh token is required.");
             }
 
-            // استدعاء المنطق الفعلي من AuthService
+            
             var result = await _authService.RefreshToken(request);
 
             if (!result.Success)
@@ -131,11 +132,11 @@ namespace Clinical_project.Controllers.Auth
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
-                return BadRequest("User not found."); // [17]
+                return BadRequest("User not found."); 
 
             var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
             if (!result.Succeeded)
-                return BadRequest(result.Errors); // [18]
+                return BadRequest(result.Errors); 
 
             return Ok("Password successfully reset.");
         }

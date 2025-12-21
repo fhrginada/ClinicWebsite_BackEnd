@@ -1,40 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using PatientApi.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace PatientApi.Models.Entities
 {
-    public class User
+
+    public class User : IdentityUser<string>
     {
-        [Key]
-        public int UserId { get; set; }
+        // ❌ لا override لـ Email / UserName / PasswordHash
 
-        [Required, StringLength(100)]
-        public string UserName { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
+        public DateTime? BirthDate { get; set; }
 
-        [Required, StringLength(150)]
-        public string Email { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryDate { get; set; }
 
-        [Required]
-        public string PasswordHash { get; set; }
-
-       
         public UserRole Role { get; set; } = UserRole.Patient;
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
-        public Doctor DoctorProfile { get; set; }
-        public Nurse NurseProfile { get; set; }
-        public Patient PatientProfile { get; set; }
+        // Navigation Properties
+        public Doctor? DoctorProfile { get; set; }
+        public Nurse? NurseProfile { get; set; }
+        public Patient? PatientProfile { get; set; }
 
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
     }
 
-    
     public enum UserRole
     {
         Admin,

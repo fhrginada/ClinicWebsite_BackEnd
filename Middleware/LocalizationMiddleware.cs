@@ -20,14 +20,14 @@ namespace Clinical_project.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            string cultureCode = "en-US"; // القيمة الافتراضية
+            string cultureCode = "en-US";
 
-            // 🆕 منطق قراءة رأس 'Accept-Language' [1], [21]
+            
             if (context.Request.Headers.ContainsKey("Accept-Language"))
             {
                 var acceptedLanguages = context.Request.Headers["Accept-Language"].ToString();
 
-                // البحث عن أول لغة مدعومة
+                
                 var preferredCulture = acceptedLanguages
                     .Split(',')
                     .Select(c => c.Split(';').First().Trim())
@@ -39,11 +39,11 @@ namespace Clinical_project.Middleware
                 }
             }
 
-            // تعيين ثقافة الخيط الحالي
+            
             CultureInfo.CurrentCulture = new CultureInfo(cultureCode);
             CultureInfo.CurrentUICulture = new CultureInfo(cultureCode);
 
-            await _next(context); // [21]
+            await _next(context); 
         }
     }
 }

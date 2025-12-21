@@ -1,12 +1,10 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using ClinicalProject_API.Data;
 
 namespace Clinical_project.Models.Entities
 {
     public class SystemSettings
     {
-        
         [Key]
         public int Id { get; set; } = 1;
 
@@ -20,15 +18,12 @@ namespace Clinical_project.Models.Entities
 
         public string SupportEmail { get; set; } = "support@clinical.com";
 
-        
-        [Key] 
-        public int ClinicSettingsId { get; set; }
-
-        [Required, StringLength(100)]
-        public required string Key { get; set; }
+        // هذه الحقول كانت تسبب مشكلة Required
+        [StringLength(100)]
+        public string Key { get; set; } = string.Empty;
 
         [StringLength(1024)]
-        public required string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
