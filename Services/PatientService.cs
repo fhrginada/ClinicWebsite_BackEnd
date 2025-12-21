@@ -76,6 +76,8 @@ public class PatientService : IPatientService
         var p = new Patient
         {
             UserId = dto.UserId,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
             DateOfBirth = dto.DateOfBirth,
             Gender = dto.Gender,
             BloodType = NormalizeBloodType(dto.BloodType),
@@ -98,6 +100,8 @@ public class PatientService : IPatientService
 
         ValidatePatient(dto);
 
+        p.FirstName = dto.FirstName;
+        p.LastName = dto.LastName;
         p.DateOfBirth = dto.DateOfBirth;
         p.Gender = dto.Gender;
         p.BloodType = NormalizeBloodType(dto.BloodType);
