@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Clinical_project.Models;
-using System.Security.Claims;
 using PatientApi.Models.Entities;
-
 
 
 namespace Clinical_project.Data.Seed
@@ -10,7 +7,7 @@ namespace Clinical_project.Data.Seed
     public static class DefaultUsersSeeder
     {
         public static async Task SeedRolesAndUsers(
-            RoleManager<IdentityRole<string>> roleManager,
+            RoleManager<IdentityRole<int>> roleManager,
             UserManager<User> userManager)
         {
             string[] roles = { "Admin", "Doctor", "Nurse" };
@@ -19,7 +16,7 @@ namespace Clinical_project.Data.Seed
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await roleManager.CreateAsync(new IdentityRole<string>(role));
+                    await roleManager.CreateAsync(new IdentityRole<int>(role));
                 }
             }
 
@@ -31,7 +28,6 @@ namespace Clinical_project.Data.Seed
                     UserName = "admin@clinical.com",
                     Email = "admin@clinical.com",
                     FullName = "System Administrator",
-                    Gender = "N/A",
                     EmailConfirmed = true,
                     Role = UserRole.Admin
                 };
