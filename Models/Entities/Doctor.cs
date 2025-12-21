@@ -23,8 +23,10 @@ namespace PatientApi.Models.Entities
         [NotMapped]
         public string Specialization => Specialty ?? string.Empty;
 
-        public int UserId { get; set; }
+        public int UserId { get; set; } 
         public User User { get; set; } = null!;
+
+        public string RoleName { get; set; } = "Doctor";
 
         public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

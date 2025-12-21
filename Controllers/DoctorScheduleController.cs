@@ -1,6 +1,7 @@
 ﻿using PatientApi.Models.Entities;
 using PatientApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using PatientApi.Services.Implementations;
 
 namespace PatientApi.Controllers
 {

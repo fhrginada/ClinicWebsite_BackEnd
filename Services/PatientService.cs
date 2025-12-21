@@ -1,8 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PatientApi.Models.Entities;
 using PatientApi.Repositories.Interfaces;
 using PatientApi.Services.Interfaces;
 using PatientApi.Models.ViewModels;
+
 
 namespace PatientApi.Services;
 
@@ -12,20 +13,26 @@ public class PatientService : IPatientService
     private readonly IAppointmentRepository _appointmentRepo;
     private readonly INotificationRepository _notificationRepo;
 
-    public PatientService(IPatientRepository repo, IAppointmentRepository appointmentRepo, INotificationRepository notificationRepo)
+    public PatientService(
+        IPatientRepository repo,
+        IAppointmentRepository appointmentRepo,
+        INotificationRepository notificationRepo)
     {
         _repo = repo;
         _appointmentRepo = appointmentRepo;
         _notificationRepo = notificationRepo;
     }
 
-    private static readonly HashSet<string> _validBloodTypes = new(new[] 
-    { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" }, StringComparer.OrdinalIgnoreCase);
+    private static readonly HashSet<string> _validBloodTypes = new(
+        new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" },
+        StringComparer.OrdinalIgnoreCase
+    );
 
     public async Task<(int total, List<PatientViewModel> items)> GetAsync(int? gender, int page, int pageSize)
     {
         var q = _repo.Query();
-        if (gender.HasValue) q = q.Where(p => (int)p.Gender == gender.Value);
+        if (gender.HasValue)
+            q = q.Where(p => (int)p.Gender == gender.Value);
 
         var total = await q.CountAsync();
         var list = await q.OrderBy(p => p.Id)
@@ -35,7 +42,8 @@ public class PatientService : IPatientService
                           .ToListAsync();
 
         foreach (var p in list)
-            foreach (var m in p.MedicalHistories) m.Patient = null;
+            foreach (var m in p.MedicalHistories)
+                m.Patient = null;
 
         var vm = list.Select(ViewModelMapper.ToViewModel).ToList();
         return (total, vm);
@@ -46,20 +54,24 @@ public class PatientService : IPatientService
         var p = await _repo.Query()
                            .Include(x => x.MedicalHistories)
                            .FirstOrDefaultAsync(x => x.Id == id);
+
         if (p == null) return null;
 
-        foreach (var m in p.MedicalHistories) m.Patient = null;
+        foreach (var m in p.MedicalHistories)
+            m.Patient = null;
+
         return ViewModelMapper.ToViewModel(p);
+    }
+
+    // ✅ جديد – Entity فقط
+    public async Task<Patient?> GetEntityByIdAsync(int id)
+    {
+        return await _repo.FindAsync(id);
     }
 
     public async Task<PatientViewModel> CreateAsync(Patient dto)
     {
-        var today = DateTime.UtcNow.Date;
-        if (dto.DateOfBirth >= today) throw new ArgumentException("DateOfBirth must be in the past");
-        var age = today.Year - dto.DateOfBirth.Year - (dto.DateOfBirth.Date > today.AddYears(-(today.Year - dto.DateOfBirth.Year)) ? 1 : 0);
-        if (age <= 0 || age > 150) throw new ArgumentException("Invalid age");
-        if (dto.Gender == Gender.Unknown) throw new ArgumentException("Gender must be Male, Female or Other");
-        var normalizedBloodType = NormalizeBloodType(dto.BloodType);
+        ValidatePatient(dto);
 
         var p = new Patient
         {
@@ -68,11 +80,12 @@ public class PatientService : IPatientService
             LastName = dto.LastName,
             DateOfBirth = dto.DateOfBirth,
             Gender = dto.Gender,
-            BloodType = normalizedBloodType,
+            BloodType = NormalizeBloodType(dto.BloodType),
             Phone = dto.Phone,
             Address = dto.Address,
-            RoleName = dto.RoleName,
+            RoleName = dto.RoleName
         };
+
         await _repo.AddAsync(p);
         await _repo.SaveChangesAsync();
 
@@ -85,18 +98,13 @@ public class PatientService : IPatientService
         var p = await _repo.FindAsync(id);
         if (p == null) return false;
 
-        var today = DateTime.UtcNow.Date;
-        if (dto.DateOfBirth >= today) throw new ArgumentException("DateOfBirth must be in the past");
-        var age = today.Year - dto.DateOfBirth.Year - (dto.DateOfBirth.Date > today.AddYears(-(today.Year - dto.DateOfBirth.Year)) ? 1 : 0);
-        if (age <= 0 || age > 150) throw new ArgumentException("Invalid age");
-        if (dto.Gender == Gender.Unknown) throw new ArgumentException("Gender must be Male, Female or Other");
-        var normalizedBloodType = NormalizeBloodType(dto.BloodType);
+        ValidatePatient(dto);
 
         p.FirstName = dto.FirstName;
         p.LastName = dto.LastName;
         p.DateOfBirth = dto.DateOfBirth;
         p.Gender = dto.Gender;
-        p.BloodType = normalizedBloodType;
+        p.BloodType = NormalizeBloodType(dto.BloodType);
         p.Phone = dto.Phone;
         p.Address = dto.Address;
         p.RoleName = dto.RoleName;
@@ -116,11 +124,31 @@ public class PatientService : IPatientService
         return true;
     }
 
+    private static void ValidatePatient(Patient dto)
+    {
+        var today = DateTime.UtcNow.Date;
+
+        if (dto.DateOfBirth >= today)
+            throw new ArgumentException("DateOfBirth must be in the past");
+
+        var age = today.Year - dto.DateOfBirth.Year;
+        if (age <= 0 || age > 150)
+            throw new ArgumentException("Invalid age");
+
+        if (dto.Gender == Gender.Unknown)
+            throw new ArgumentException("Gender must be Male, Female or Other");
+
+        NormalizeBloodType(dto.BloodType);
+    }
+
     private static string? NormalizeBloodType(string? bloodType)
     {
         if (string.IsNullOrWhiteSpace(bloodType)) return null;
+
         var normalized = bloodType.Trim().ToUpperInvariant();
-        if (!_validBloodTypes.Contains(normalized)) throw new ArgumentException("Invalid blood type");
+        if (!_validBloodTypes.Contains(normalized))
+            throw new ArgumentException("Invalid blood type");
+
         return normalized;
     }
 
@@ -130,6 +158,7 @@ public class PatientService : IPatientService
         if (patient == null) return null;
 
         var allAppointments = await _appointmentRepo.GetAllAsync();
+
         var upcomingAppointments = allAppointments
             .Where(a => a.PatientId == patientId && a.AppointmentDate >= DateTime.UtcNow)
             .OrderBy(a => a.AppointmentDate)
