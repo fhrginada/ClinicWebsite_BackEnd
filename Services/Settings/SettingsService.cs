@@ -25,7 +25,7 @@ namespace Clinical_project.Services.Settings
 
             if (settings == null)
             {
-                // إذا لم يتم العثور على إعدادات، يتم إنشاء سجل جديد بالقيم الافتراضية
+                
                 settings = new SystemSettings
                 {
                     Id = 1, 
@@ -40,21 +40,20 @@ namespace Clinical_project.Services.Settings
             return settings;
         }
 
-        // 2. تحديث إعدادات النظام (يجب أن يتم هذا الإجراء بواسطة المسؤول فقط)
+
         public async Task<SystemSettings> UpdateSettingsAsync(UpdateSettingsRequest request)
         {
-            // نبحث عن سجل الإعدادات (نستخدم FirstOrDefaultAsync بدلاً من FindAsync
-            // لضمان التعامل مع حالة عدم وجود سجل)
+            
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
 
             if (settings == null)
             {
-                // إذا كان السجل غير موجود لسبب ما، نحاول إنشاء سجل جديد قبل التحديث
+    
                 settings = new SystemSettings { Id = 1 };
                 _context.SystemSettings.Add(settings);
             }
 
-            // تطبيق التحديثات من نموذج الطلب
+
             settings.PlatformName = request.PlatformName;
             settings.TimeZoneId = request.TimeZoneId;
             settings.DefaultConsultationDurationMinutes = request.DefaultConsultationDurationMinutes;

@@ -10,4 +10,5 @@ public interface IPatientService
     Task<PatientViewModel> CreateAsync(Patient dto);
     Task<bool> UpdateAsync(int id, Patient dto);
     Task<bool> DeleteAsync(int id);
+    Task<PatientDashboardResponse?> GetDashboardAsync(int patientId);
 }

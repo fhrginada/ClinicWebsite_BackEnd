@@ -1,4 +1,4 @@
-using Clinical_project.Data;
+﻿using Clinical_project.Data;
 using Clinical_project.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +7,11 @@ using PatientApi.Data;
 using PatientApi.Models.ViewModels;
 using PatientApi.Models.Entities;
 
-
 namespace Clinical_project.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] 
+    [Authorize]
     public class PatientsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -25,15 +24,20 @@ namespace Clinical_project.Controllers
             _service = service;
         }
 
-       
-        [HttpGet("all")] 
+        // =========================
+        // Get all patients (simple list)
+        // =========================
+        [HttpGet("all")]
         public async Task<IActionResult> GetPatients()
         {
             var patients = await _context.Patients.ToListAsync();
             return Ok(patients);
         }
 
-        [HttpPost("add")] 
+        // =========================
+        // Add patient directly to DbContext
+        // =========================
+        [HttpPost("add")]
         public async Task<IActionResult> AddPatient([FromBody] Patient patient)
         {
             _context.Patients.Add(patient);
@@ -41,7 +45,9 @@ namespace Clinical_project.Controllers
             return Ok(patient);
         }
 
-        
+        // =========================
+        // Get patients with pagination and optional gender filter
+        // =========================
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int? gender, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
@@ -49,6 +55,9 @@ namespace Clinical_project.Controllers
             return Ok(new { total, page, pageSize, items });
         }
 
+        // =========================
+        // Get patient by id
+        // =========================
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -57,6 +66,9 @@ namespace Clinical_project.Controllers
             return Ok(p);
         }
 
+        // =========================
+        // Create patient via ViewModel and service
+        // =========================
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PatientCreateViewModel vm)
         {
@@ -73,16 +85,23 @@ namespace Clinical_project.Controllers
             }
         }
 
+        // =========================
+        // Update patient via ViewModel and service
+        // =========================
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] PatientUpdateViewModel vm)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-                // Create a temporary entity and apply updates, service will persist
-                var temp = new Patient();
-                InputMapper.ApplyUpdate(vm, temp);
-                var ok = await _service.UpdateAsync(id, temp);
+                
+                var existingPatient = await _service.GetByIdAsync(id);
+                if (existingPatient == null) return NotFound();
+
+                
+                InputMapper.ApplyUpdate(existingPatient, vm);
+
+                var ok = await _service.UpdateAsync(id, existingPatient);
                 return ok ? NoContent() : NotFound();
             }
             catch (ArgumentException ex)
@@ -91,12 +110,27 @@ namespace Clinical_project.Controllers
             }
         }
 
+        // =========================
+        // Delete patient via service
+        // =========================
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             var ok = await _service.DeleteAsync(id);
             if (!ok) return NotFound();
             return NoContent();
+        }
+
+        // =========================
+        // Get dashboard data for patient
+        // =========================
+        [HttpGet("dashboard")]
+        [HttpGet("dashboard/{patientId:int}")]
+        public async Task<IActionResult> GetDashboard(int patientId)
+        {
+            var dashboard = await _service.GetDashboardAsync(patientId);
+            if (dashboard == null) return NotFound();
+            return Ok(dashboard);
         }
     }
 }

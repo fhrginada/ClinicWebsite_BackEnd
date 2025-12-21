@@ -30,7 +30,7 @@ namespace Clinical_project.Services.Auth
         }
 
 
-        public async Task<IdentityResult> AssignRoleToUser(string userId, string roleName)
+        public async Task<IdentityResult> AssignRoleToUser(int userId, string roleName)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null || !await _roleManager.RoleExistsAsync(roleName))

@@ -2,7 +2,7 @@
 {
     public class AssignRoleRequest
     {
-        public string UserId { get; set; } = null!;
+        public int UserId { get; set; } 
         public string RoleName { get; set; } = null!;
     }
 }

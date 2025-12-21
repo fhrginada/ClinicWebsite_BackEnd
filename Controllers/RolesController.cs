@@ -8,6 +8,7 @@ using PatientApi.Models.Entities;
 
 namespace Clinical_project.Controllers.Auth
 {
+
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]

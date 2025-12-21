@@ -23,7 +23,7 @@ namespace PatientApi.Models.Entities
         [NotMapped]
         public string Specialization => Specialty ?? string.Empty;
 
-        public string UserId { get; set; } = string.Empty;
+        public int UserId { get; set; } 
         public User User { get; set; } = null!;
 
         public string RoleName { get; set; } = "Doctor";

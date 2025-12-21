@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 namespace PatientApi.Models.Entities
 {
 
-    public class User : IdentityUser<string>
+    public class User : IdentityUser<int>
     {
-        // ❌ لا override لـ Email / UserName / PasswordHash
+
 
         public string FullName { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
