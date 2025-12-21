@@ -15,9 +15,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IPatientRepository, PatientApi.Repositories.PatientRepository>();
 builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IMedicalHistoryRepository, PatientApi.Repositories.MedicalHistoryRepository>();
 
+// Prescription Module Repositories
+builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IPrescriptionRepository, PatientApi.Repositories.Implementation.PrescriptionRepository>();
+builder.Services.AddScoped<PatientApi.Repositories.Interfaces.IMedicationRepository, PatientApi.Repositories.Implementation.MedicationRepository>();
+
 // services
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IPatientService, PatientApi.Services.PatientService>();
 builder.Services.AddScoped<PatientApi.Services.Interfaces.IMedicalHistoryService, PatientApi.Services.MedicalHistoryService>();
+
+// Prescription Module Services
+//builder.Services.AddScoped<PatientApi.Services.Interfaces.IPrescriptionService, PatientApi.Services.PrescriptionService>();
+//builder.Services.AddScoped<PatientApi.Services.Interfaces.IMedicationService, PatientApi.Services.MedicationService>();
+//builder.Services.AddScoped<IPdfGeneratorService, PdfGeneratorService>();
+
+
 
 var app = builder.Build();
 
