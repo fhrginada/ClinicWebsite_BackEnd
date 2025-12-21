@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace PatientApi.Models.Entities
 {
     public class Patient
     {
         public int Id { get; set; }
 
-        // من HEAD
-        public string? FullName { get; set; }
-
-        // UserId زي main
         public int? UserId { get; set; }
 
-        // Optional mapping to an external user/doctor system
-        public User? User { get; set; }
+        public string? FirstName { get; set; }
 
-        public DateTime DateOfBirth { get; set; } // من main
+        public string? LastName { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
 
         public Gender Gender { get; set; }
 
@@ -30,6 +28,8 @@ namespace PatientApi.Models.Entities
         public string? RoleName { get; set; }
 
         // Navigation Properties
+        public User? User { get; set; }
+
         public ICollection<MedicalHistory> MedicalHistories { get; set; }
             = new List<MedicalHistory>();
 
