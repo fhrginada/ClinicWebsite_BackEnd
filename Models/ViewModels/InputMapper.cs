@@ -9,21 +9,29 @@ namespace PatientApi.Models.ViewModels
         {
             return new Patient
             {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
                 Phone = request.Phone,
                 Address = request.Address,
                 BloodType = request.BloodType,
                 Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth
+                DateOfBirth = request.DateOfBirth,
+                RoleName = request.RoleName,
+                UserId = request.UserId
             };
         }
 
         public static void ApplyUpdate(Patient patient, PatientUpdateViewModel request)
         {
+            patient.FirstName = request.FirstName;
+            patient.LastName = request.LastName;
             patient.Phone = request.Phone;
             patient.Address = request.Address;
             patient.BloodType = request.BloodType;
             patient.Gender = request.Gender;
             patient.DateOfBirth = request.DateOfBirth;
+            patient.RoleName = request.RoleName;
+            patient.UserId = request.UserId;
         }
 
         public static MedicalHistory ToEntity(MedicalHistoryCreateViewModel request)
