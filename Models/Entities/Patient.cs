@@ -13,7 +13,7 @@ namespace PatientApi.Models.Entities
 
         public Gender Gender { get; set; }
 
-        public string? BloodType { get; set; }
+        public string? BloodType { get; set; }  
 
         public string? Phone { get; set; }
 
