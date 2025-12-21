@@ -64,6 +64,8 @@ public class PatientService : IPatientService
         var p = new Patient
         {
             UserId = dto.UserId,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
             DateOfBirth = dto.DateOfBirth,
             Gender = dto.Gender,
             BloodType = normalizedBloodType,
@@ -90,6 +92,8 @@ public class PatientService : IPatientService
         if (dto.Gender == Gender.Unknown) throw new ArgumentException("Gender must be Male, Female or Other");
         var normalizedBloodType = NormalizeBloodType(dto.BloodType);
 
+        p.FirstName = dto.FirstName;
+        p.LastName = dto.LastName;
         p.DateOfBirth = dto.DateOfBirth;
         p.Gender = dto.Gender;
         p.BloodType = normalizedBloodType;

@@ -9,6 +9,7 @@ namespace PatientApi.Models.ViewModels
             return new PatientViewModel
             {
                 Id = p.Id,
+                FullName = $"{p.FirstName} {p.LastName}".Trim(),
                 Phone = p.Phone,
                 Address = p.Address,
                 BloodType = p.BloodType,
