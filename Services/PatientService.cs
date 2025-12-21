@@ -167,7 +167,7 @@ public class PatientService : IPatientService
             {
                 Id = a.AppointmentId,
                 PatientId = a.PatientId,
-                PatientName = a.Patient?.RoleName ?? string.Empty,
+                PatientName = a.Patient != null ? ($"{a.Patient.FirstName} {a.Patient.LastName}").Trim() : string.Empty,
                 PatientEmail = a.Patient?.User?.Email ?? string.Empty,
                 PatientPhone = a.Patient?.Phone ?? string.Empty,
                 DoctorId = a.DoctorId,
@@ -203,7 +203,7 @@ public class PatientService : IPatientService
 
         return new PatientDashboardResponse
         {
-            PatientInfo = patient,
+            FirstName = patient.FirstName,
             UpcomingAppointments = upcomingAppointments,
             Notifications = notificationResponses
         };
