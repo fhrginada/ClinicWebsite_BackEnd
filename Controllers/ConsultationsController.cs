@@ -21,5 +21,21 @@ namespace PatientApi.Controllers
             await _service.CreateAsync(request);
             return Ok();
         }
+
+        [HttpGet("{appointmentId}")]
+        public async Task<IActionResult> GetByAppointmentId(int appointmentId)
+        {
+            var consultation = await _service.GetByAppointmentIdAsync(appointmentId);
+            if (consultation == null) return NotFound("Consultation not found for this appointment");
+            return Ok(consultation);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, ConsultationRequest request)
+        {
+            var result = await _service.UpdateAsync(id, request);
+            if (!result) return NotFound("Consultation not found");
+            return Ok("Consultation updated successfully");
+        }
     }
 }

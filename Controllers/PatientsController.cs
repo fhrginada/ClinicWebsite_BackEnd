@@ -51,7 +51,7 @@ public class PatientsController : ControllerBase
         {
             // Create a temporary entity and apply updates, service will persist
             var temp = new Patient();
-            InputMapper.ApplyUpdate(vm, temp);
+            InputMapper.ApplyUpdate(temp, vm);
             var ok = await _service.UpdateAsync(id, temp);
             return ok ? NoContent() : NotFound();
         }
@@ -67,5 +67,14 @@ public class PatientsController : ControllerBase
         var ok = await _service.DeleteAsync(id);
         if (!ok) return NotFound();
         return NoContent();
+    }
+
+    [HttpGet("dashboard")]
+    [HttpGet("dashboard/{patientId:int}")]
+    public async Task<IActionResult> GetDashboard(int patientId)
+    {
+        var dashboard = await _service.GetDashboardAsync(patientId);
+        if (dashboard == null) return NotFound();
+        return Ok(dashboard);
     }
 }

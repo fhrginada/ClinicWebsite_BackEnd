@@ -1,42 +1,33 @@
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
 
-namespace PatientApi.Models.Entities;
-
-public enum Gender { Unknown = 0, Male = 1, Female = 2, Other = 3 }
-
-public class Patient
+namespace PatientApi.Models.Entities
 {
-    public int Id { get; set; }
+    public class Patient
+    {
+        public int Id { get; set; }
 
-    public string FullName { get; set; }
+        public int? UserId { get; set; }
 
-    // Optional mapping to an external user/doctor system
-    [MaxLength(100)]
-    public string? UserId { get; set; }
-    public User? User { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
-    public ICollection<MedicalHistory> MedicalHistories { get; set; }
-    = new List<MedicalHistory>();
+        public Gender Gender { get; set; }
 
-    public ICollection<Appointment> Appointments { get; set; }
-        = new List<Appointment>();
+        public string? BloodType { get; set; }  
 
+        public string? Phone { get; set; }
 
-    public DateTime DateOfBirth { get; set; }
+        public string? Address { get; set; }
 
-    public Gender Gender { get; set; } = Gender.Unknown;
+        public string? RoleName { get; set; }
 
-    [MaxLength(3)]
-    public string? BloodType { get; set; }
+        // Navigation Properties
+        public User? User { get; set; }
 
-    [MaxLength(50)]
-    public string? Phone { get; set; }
+        public ICollection<MedicalHistory> MedicalHistories { get; set; }
+            = new List<MedicalHistory>();
 
-    [MaxLength(300)]
-    public string? Address { get; set; }
-
-    [MaxLength(50)]
-    public string? RoleName { get; set; }
-
-    
+        public ICollection<Appointment> Appointments { get; set; }
+            = new List<Appointment>();
+    }
 }

@@ -6,7 +6,7 @@ namespace PatientApi.Services.Interfaces
     {
         Task<DoctorResponse> CreateDoctorAsync(CreateDoctorRequest model);
         Task<IEnumerable<DoctorResponse>> GetAllDoctorsAsync();
-        Task<DoctorResponse> GetDoctorByIdAsync(int id);
+        Task<DoctorResponse?> GetDoctorByIdAsync(int id);
         Task<bool> UpdateDoctorAsync(int id, UpdateDoctorRequest model);
         Task<bool> DeleteDoctorAsync(int id);
     }

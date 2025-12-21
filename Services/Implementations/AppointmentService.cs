@@ -50,11 +50,17 @@ namespace PatientApi.Services.Implementations
                 Id = a.AppointmentId,
                 DoctorId = a.DoctorId,
                 PatientId = a.PatientId,
-                DoctorName = a.Doctor?.FullName,
-                PatientName = a.Patient?.FullName,
+                DoctorName = a.Doctor?.FullName ?? string.Empty,
+                DoctorSpecialization = a.Doctor?.Specialty ?? string.Empty,
+                PatientName = a.Patient?.User?.UserName ?? string.Empty,
+                PatientEmail = a.Patient?.User?.Email ?? string.Empty,
+                PatientPhone = a.Patient?.Phone ?? string.Empty,
                 AppointmentDate = a.AppointmentDate,
                 TimeSlot = a.TimeSlot,
                 Status = a.Status.ToString(),
+                ReasonForVisit = a.ReasonForVisit ?? string.Empty,
+                Notes = a.Notes ?? string.Empty,
+                CreatedAt = a.CreatedAt,
                 HasConsultation = a.Consultation != null
             });
         }

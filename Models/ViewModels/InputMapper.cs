@@ -1,55 +1,53 @@
 using PatientApi.Models.Entities;
+using PatientApi.Models.ViewModels;
 
-namespace PatientApi.Models.ViewModels;
-
-public static class InputMapper
+namespace PatientApi.Models.ViewModels
 {
-    public static Patient ToEntity(PatientCreateViewModel vm)
+    public static class InputMapper
     {
-        return new Patient
+        public static Patient ToEntity(PatientCreateViewModel request)
         {
-            DateOfBirth = vm.DateOfBirth,
-            Gender = vm.Gender,
-            BloodType = vm.BloodType,
-            Phone = vm.Phone,
-            Address = vm.Address,
-            RoleName = vm.RoleName,
-            UserId = vm.UserId
-        };
-    }
+            return new Patient
+            {
+                Phone = request.Phone,
+                Address = request.Address,
+                BloodType = request.BloodType,
+                Gender = request.Gender,
+                DateOfBirth = request.DateOfBirth
+            };
+        }
 
-    public static void ApplyUpdate(PatientUpdateViewModel vm, Patient p)
-    {
-        p.DateOfBirth = vm.DateOfBirth;
-        p.Gender = vm.Gender;
-        p.BloodType = vm.BloodType;
-        p.Phone = vm.Phone;
-        p.Address = vm.Address;
-        p.RoleName = vm.RoleName;
-        p.UserId = vm.UserId;
-    }
-
-    public static MedicalHistory ToEntity(MedicalHistoryCreateViewModel vm)
-    {
-        return new MedicalHistory
+        public static void ApplyUpdate(Patient patient, PatientUpdateViewModel request)
         {
-            PatientId = vm.PatientId,
-            DoctorId = vm.DoctorId,
-            DateRecorded = vm.DateRecorded,
-            FollowUpDate = vm.FollowUpDate,
-            Diagnosis = vm.Diagnosis,
-            Treatment = vm.Treatment,
-            AttachmentUrl = vm.AttachmentUrl
-        };
-    }
+            patient.Phone = request.Phone;
+            patient.Address = request.Address;
+            patient.BloodType = request.BloodType;
+            patient.Gender = request.Gender;
+            patient.DateOfBirth = request.DateOfBirth;
+        }
 
-    public static void ApplyUpdate(MedicalHistoryUpdateViewModel vm, MedicalHistory m)
-    {
-        m.DoctorId = vm.DoctorId;
-        m.DateRecorded = vm.DateRecorded;
-        m.FollowUpDate = vm.FollowUpDate;
-        m.Diagnosis = vm.Diagnosis;
-        m.Treatment = vm.Treatment;
-        m.AttachmentUrl = vm.AttachmentUrl;
+        public static MedicalHistory ToEntity(MedicalHistoryCreateViewModel request)
+        {
+            return new MedicalHistory
+            {
+                PatientId = request.PatientId,
+                DateRecorded = request.DateRecorded,
+                DoctorId = request.DoctorId,
+                Diagnosis = request.Diagnosis,
+                Treatment = request.Treatment,
+                FollowUpDate = request.FollowUpDate,
+                AttachmentUrl = request.AttachmentUrl
+            };
+        }
+
+        public static void ApplyUpdate(MedicalHistory medicalHistory, MedicalHistoryUpdateViewModel request)
+        {
+            medicalHistory.DateRecorded = request.DateRecorded;
+            medicalHistory.DoctorId = request.DoctorId;
+            medicalHistory.Diagnosis = request.Diagnosis;
+            medicalHistory.Treatment = request.Treatment;
+            medicalHistory.FollowUpDate = request.FollowUpDate;
+            medicalHistory.AttachmentUrl = request.AttachmentUrl;
+        }
     }
 }

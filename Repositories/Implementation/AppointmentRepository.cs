@@ -18,7 +18,9 @@ namespace PatientApi.Repositories.Implementations
         {
             return await _context.Appointments
                 .Include(a => a.Doctor)
-                .Include(a => a.Patient)
+                .Include(a => a.Patient)!
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Consultation)
                 .ToListAsync();
         }
 
