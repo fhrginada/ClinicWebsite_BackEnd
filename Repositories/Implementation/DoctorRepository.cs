@@ -22,7 +22,7 @@ namespace PatientApi.Repositories.Implementation
                 .ToListAsync();
         }
 
-        public async Task<Doctor> GetByIdAsync(int id)
+        public async Task<Doctor?> GetByIdAsync(int id)
         {
             return await _context.Doctors
                 .Include(d => d.User)

@@ -1,27 +1,78 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
-// Repositories
-using PatientApi.Repositories.Interfaces;
-using PatientApi.Repositories.Implementation;
-
-// Services
-using PatientApi.Services.Interfaces;
-using PatientApi.Services.Implementations;
-
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using PatientApi.Data;
+using PatientApi.Models.Entities;
+using Clinical_project.Middleware;
+using Clinical_project.Services.Auth;
+using Clinical_project.Services.Settings;
+using Clinical_project.Data.Seed;
+using PatientApi.Repositories.Interfaces;
+using PatientApi.Repositories;
+using PatientApi.Repositories.Implementations;
+using PatientApi.Services.Interfaces;
+using PatientApi.Services;
+using PatientApi.Services.Implementations;
+using PatientApi.Repositories.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ================= Controllers & Swagger =================
+// =========================
+// Controllers & Swagger
+// =========================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ================= Database =================
+// =========================
+// Database
+// =========================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
-// ================= Repositories =================
+// =========================
+// Identity (INT ✔)
+// =========================
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// =========================
+// JWT Authentication
+// =========================
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(
+                builder.Configuration["JwtSettings:SecretKey"]!
+            )
+        )
+    };
+});
+
+// =========================
+// Application Services
+// =========================
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<RolesService>();
+builder.Services.AddScoped<SettingsService>();
+
+// =========================
+// Repositories
+// =========================
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
@@ -34,7 +85,9 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 
-// ================= Services =================
+// =========================
+// Domain Services
+// =========================
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IMedicalHistoryService, MedicalHistoryService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
@@ -43,14 +96,10 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 builder.Services.AddScoped<INurseScheduleService, NurseScheduleService>();
 builder.Services.AddScoped<IExportService, ExportService>();
-builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
-builder.Services.AddScoped<IMedicationService, MedicationService>();
-builder.Services.AddScoped<INurseService, NurseService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IPdfGeneratorService, PdfGeneratorService>();
-builder.Services.AddScoped<IReportService, ReportService>();
 
-// ================= CORS =================
+// =========================
+// CORS
+// =========================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -63,7 +112,35 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// ================= Middleware =================
+// =========================
+// Database Migration + Seeder
+// =========================
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider
+        .GetRequiredService<RoleManager<IdentityRole<int>>>();
+
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<User>>();
+
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    if (app.Environment.IsDevelopment())
+    {
+        dbContext.Database.EnsureDeleted();
+        dbContext.Database.EnsureCreated();
+    }
+    else
+    {
+        dbContext.Database.Migrate();
+    }
+    await DefaultUsersSeeder.SeedRolesAndUsers(roleManager, userManager);
+}
+
+// =========================
+// Middleware
+// =========================
 app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment())
@@ -73,6 +150,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LocalizationMiddleware>();
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

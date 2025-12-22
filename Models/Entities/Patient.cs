@@ -1,5 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace PatientApi.Models.Entities
 {
@@ -9,11 +11,15 @@ namespace PatientApi.Models.Entities
 
         public int? UserId { get; set; }
 
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+
         public DateTime DateOfBirth { get; set; }
 
         public Gender Gender { get; set; }
 
-        public string? BloodType { get; set; }  
+        public string? BloodType { get; set; }
 
         public string? Phone { get; set; }
 
