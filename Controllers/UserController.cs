@@ -68,6 +68,7 @@ namespace Clinical_project.Controllers.Auth
             return Ok("User created successfully and assigned a role.");
         }
 
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto request)
         {
             if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
