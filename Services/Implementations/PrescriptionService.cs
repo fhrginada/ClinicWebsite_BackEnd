@@ -18,7 +18,7 @@ namespace PatientApi.Services
         public Task AddAsync(Prescription prescription) => _repository.AddAsync(prescription);
         public Task<bool> DeleteAsync(int id) => _repository.DeleteAsync(id);
         public Task<IEnumerable<Prescription>> GetAllAsync() => _repository.GetAllAsync();
-        public Task<Prescription?> GetByIdAsync(int id) => _repository.GetByIdAsync(id);
+        public Task<Prescription> GetByIdAsync(int id) => _repository.GetByIdAsync(id);
         public Task<bool> UpdateAsync(Prescription prescription) => _repository.UpdateAsync(prescription);
     }
 }

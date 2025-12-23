@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Clinical_project.Services.Settings;
 using Clinical_project.Models.Entities;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Clinical_project.Controllers
 {
