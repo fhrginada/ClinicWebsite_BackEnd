@@ -68,7 +68,6 @@ namespace Clinical_project.Controllers.Auth
             return BadRequest(result.Errors);
         }
 
-       
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto request)
         {
@@ -126,11 +125,11 @@ namespace Clinical_project.Controllers.Auth
             if (user == null) return Ok("If user exists, password reset request has been processed.");
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // هنا يفترض إرسال الإيميل، ولكن سنرجع التوكن للتبسيط الآن
+            
             return Ok(new { Token = token, Message = "Password reset request processed." });
         }
 
-        // 5. تعيين كلمة مرور جديدة
+        
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {

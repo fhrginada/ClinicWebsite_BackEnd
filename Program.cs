@@ -82,6 +82,8 @@ builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>(
 builder.Services.AddScoped<INurseRepository, NurseRepository>();
 builder.Services.AddScoped<INurseScheduleRepository, NurseScheduleRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 
 // =========================
 // Domain Services
@@ -124,7 +126,15 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider
         .GetRequiredService<AppDbContext>();
 
-    dbContext.Database.Migrate();
+    if (app.Environment.IsDevelopment())
+    {
+        dbContext.Database.EnsureDeleted();
+        dbContext.Database.EnsureCreated();
+    }
+    else
+    {
+        dbContext.Database.Migrate();
+    }
     await DefaultUsersSeeder.SeedRolesAndUsers(roleManager, userManager);
 }
 
@@ -144,7 +154,6 @@ app.UseMiddleware<LocalizationMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
