@@ -24,6 +24,24 @@ namespace PatientApi.Repositories.Implementation
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Prescription>> GetByDoctorIdAsync(int doctorId)
+        {
+            return await _context.Prescriptions
+                .Where(p => p.DoctorId == doctorId)
+                .Include(p => p.Items)
+                    .ThenInclude(i => i.Medication)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Prescription>> GetByPatientIdAsync(int patientId)
+        {
+            return await _context.Prescriptions
+                .Where(p => p.PatientId == patientId)
+                .Include(p => p.Items)
+                    .ThenInclude(i => i.Medication)
+                .ToListAsync();
+        }
+
         public async Task<Prescription> GetByIdAsync(int id)
         {
             return await _context.Prescriptions

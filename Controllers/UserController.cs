@@ -34,7 +34,7 @@ namespace Clinical_project.Controllers.Auth
             _authService = authService;
         }
 
-       
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto request)
         {
@@ -59,7 +59,7 @@ namespace Clinical_project.Controllers.Auth
            
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Doctor"); 
+                await _userManager.AddToRoleAsync(user, "Patient");
             }
 
             if (!result.Succeeded)
@@ -68,6 +68,7 @@ namespace Clinical_project.Controllers.Auth
             return Ok("User created successfully and assigned a role.");
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto request)
         {
@@ -92,7 +93,7 @@ namespace Clinical_project.Controllers.Auth
             }); 
         }
 
-        
+        [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request) 
         {
@@ -116,6 +117,7 @@ namespace Clinical_project.Controllers.Auth
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] string email) 
         {
@@ -128,6 +130,7 @@ namespace Clinical_project.Controllers.Auth
             return Ok("Password reset request processed."); 
         }
 
+        [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {

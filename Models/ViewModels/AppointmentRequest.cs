@@ -5,8 +5,7 @@ namespace PatientApi.Models.ViewModels
 {
     public class AppointmentRequest
     {
-        [Required]
-        public int PatientId { get; set; }  // existing patient ID
+        public int? PatientId { get; set; }
 
         [Required]
         public int DoctorId { get; set; }

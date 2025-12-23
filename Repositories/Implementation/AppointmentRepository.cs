@@ -24,6 +24,39 @@ namespace PatientApi.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Appointment>> GetByPatientIdAsync(int patientId)
+        {
+            return await _context.Appointments
+                .Where(a => a.PatientId == patientId)
+                .Include(a => a.Doctor)
+                .Include(a => a.Patient)!
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Consultation)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetByDoctorIdAsync(int doctorId)
+        {
+            return await _context.Appointments
+                .Where(a => a.DoctorId == doctorId)
+                .Include(a => a.Doctor)
+                .Include(a => a.Patient)!
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Consultation)
+                .ToListAsync();
+        }
+
+        public async Task<bool> ExistsConflictAsync(int doctorId, int patientId, DateTime appointmentDate, string timeSlot)
+        {
+            var date = appointmentDate.Date;
+            return await _context.Appointments.AnyAsync(a =>
+                a.Status != AppointmentStatus.Cancelled &&
+                a.AppointmentDate.Date == date &&
+                a.TimeSlot == timeSlot &&
+                (a.DoctorId == doctorId || a.PatientId == patientId)
+            );
+        }
+
         public async Task<Appointment?> GetByIdAsync(int id)
         {
             return await _context.Appointments
