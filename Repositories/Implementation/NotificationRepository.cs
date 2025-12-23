@@ -17,6 +17,11 @@ public class NotificationRepository : INotificationRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<Notification?> GetByIdAsync(int notificationId)
+    {
+        return await _context.Notifications.FirstOrDefaultAsync(n => n.NotificationId == notificationId);
+    }
+
     public async Task<List<Notification>> GetByUserIdAsync(int userId)
     {
         return await _context.Notifications

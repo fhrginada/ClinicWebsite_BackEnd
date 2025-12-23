@@ -1,11 +1,13 @@
 ﻿using PatientApi.Models.ViewModels.NurseVM;
 using PatientApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PatientApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class NurseController : ControllerBase
     {
         private readonly INurseService _nurseService;

@@ -9,6 +9,8 @@ using System.Security.Claims;
 using Clinical_project.Models.ViewModels.Auth;
 using PatientApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace Clinical_project.Controllers.Auth
 {
@@ -35,7 +37,7 @@ namespace Clinical_project.Controllers.Auth
             _authService = authService;
         }
 
-        
+    [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto request)
         {
@@ -61,7 +63,6 @@ namespace Clinical_project.Controllers.Auth
 
             if (result.Succeeded)
             {
-                
                 await _userManager.AddToRoleAsync(user, "Patient");
                 return Ok(new { Message = "User created successfully as a Patient." });
             }
@@ -69,6 +70,7 @@ namespace Clinical_project.Controllers.Auth
             return BadRequest(result.Errors);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto request)
         {
@@ -96,7 +98,14 @@ namespace Clinical_project.Controllers.Auth
             });
         }
 
-        
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            var result = await _authService.RefreshToken(request);
+            if (!result.Success) return Unauthorized("Invalid Refresh Token");
+            return Ok(new { Token = result.JwtToken, RefreshToken = result.RefreshToken });
+        }
         [HttpGet("profile")]
         [Authorize]
         public async Task<IActionResult> GetUserProfile()
@@ -118,19 +127,18 @@ namespace Clinical_project.Controllers.Auth
             });
         }
 
-        
+        [AllowAnonymous]
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null) return Ok("If user exists, password reset request has been processed.");
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            
-            return Ok(new { Token = token, Message = "Password reset request processed." });
+            await _userManager.GeneratePasswordResetTokenAsync(user);
+            return Ok(new { Message = "Password reset request processed." });
         }
 
-        
+        [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
