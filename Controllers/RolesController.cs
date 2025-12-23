@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using PatientApi.Models.Entities;
+using Microsoft.EntityFrameworkCore;
+
 
 
 namespace Clinical_project.Controllers.Auth

@@ -20,7 +20,7 @@ namespace PatientApi.Services
         public Task<IEnumerable<Prescription>> GetAllAsync() => _repository.GetAllAsync();
         public Task<IEnumerable<Prescription>> GetForDoctorAsync(int doctorId) => _repository.GetByDoctorIdAsync(doctorId);
         public Task<IEnumerable<Prescription>> GetForPatientAsync(int patientId) => _repository.GetByPatientIdAsync(patientId);
-        public Task<Prescription?> GetByIdAsync(int id) => _repository.GetByIdAsync(id);
+        public Task<Prescription> GetByIdAsync(int id) => _repository.GetByIdAsync(id);
         public Task<bool> UpdateAsync(Prescription prescription) => _repository.UpdateAsync(prescription);
     }
 }
