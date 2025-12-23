@@ -10,7 +10,7 @@ namespace Clinical_project.Data.Seed
             RoleManager<IdentityRole<int>> roleManager,
             UserManager<User> userManager)
         {
-            string[] roles = { "Admin", "Doctor", "Nurse" };
+            string[] roles = { "Admin", "Doctor", "Nurse", "Patient" };
 
             foreach (var role in roles)
             {
