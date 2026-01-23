@@ -68,7 +68,16 @@ public class MedicalHistoriesController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (vm.DateRecorded > DateTime.UtcNow) return BadRequest("DateRecorded cannot be in the future");
-        var entity = InputMapper.ToEntity(vm);
+        
+        // Create MedicalHistory entity directly
+        var entity = new MedicalHistory
+        {
+            PatientId = vm.PatientId,
+            DateRecorded = vm.DateRecorded,
+            Diagnosis = vm.Diagnosis,
+            Treatment = vm.Treatment
+        };
+        
         var created = await _service.CreateAsync(entity);
         if (created == null) return BadRequest("Patient not found");
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
@@ -80,8 +89,14 @@ public class MedicalHistoriesController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (vm.DateRecorded > DateTime.UtcNow) return BadRequest("DateRecorded cannot be in the future");
-        var temp = new MedicalHistory();
-        InputMapper.ApplyUpdate(temp, vm);
+        
+        var temp = new MedicalHistory
+        {
+            DateRecorded = vm.DateRecorded,
+            Diagnosis = vm.Diagnosis,
+            Treatment = vm.Treatment
+        };
+        
         var ok = await _service.UpdateAsync(id, temp);
         if (!ok) return NotFound();
         return NoContent();

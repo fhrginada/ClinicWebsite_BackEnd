@@ -7,3 +7,4 @@ namespace PatientApi.Models.ViewModels
         public List<NotificationResponse> Notifications { get; set; } = new();
     }
 }
+

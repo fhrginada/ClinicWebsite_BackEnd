@@ -1,61 +1,40 @@
 using PatientApi.Models.Entities;
 using PatientApi.Models.ViewModels;
 
-namespace PatientApi.Models.ViewModels
+namespace PatientApi.Models.ViewModels;
+
+public static class InputMapper
 {
-    public static class InputMapper
+    public static Patient ToEntity(PatientCreateViewModel vm)
     {
-        public static Patient ToEntity(PatientCreateViewModel request)
+        return new Patient
         {
-            return new Patient
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Phone = request.Phone,
-                Address = request.Address,
-                BloodType = request.BloodType,
-                Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth,
-                RoleName = request.RoleName,
-                UserId = request.UserId
-            };
-        }
+            FirstName = vm.FirstName,
+            LastName = vm.LastName,
+            Address = vm.Address,
+        };
+    }
 
-        public static void ApplyUpdate(Patient patient, PatientUpdateViewModel request)
-        {
-            patient.FirstName = request.FirstName;
-            patient.LastName = request.LastName;
-            patient.Phone = request.Phone;
-            patient.Address = request.Address;
-            patient.BloodType = request.BloodType;
-            patient.Gender = request.Gender;
-            patient.DateOfBirth = request.DateOfBirth;
-            patient.RoleName = request.RoleName;
-            patient.UserId = request.UserId;
-        }
+    public static void ApplyUpdate(Patient entity, PatientUpdateViewModel vm)
+    {
+        if (!string.IsNullOrWhiteSpace(vm.FirstName))
+            entity.FirstName = vm.FirstName;
+        if (!string.IsNullOrWhiteSpace(vm.LastName))
+            entity.LastName = vm.LastName;
+        if (!string.IsNullOrWhiteSpace(vm.Address))
+            entity.Address = vm.Address;
+    }
 
-        public static MedicalHistory ToEntity(MedicalHistoryCreateViewModel request)
+    public static PatientDashboardResponse ToDashboard(
+        Patient patient,
+        List<AppointmentResponse> appointments,
+        List<NotificationResponse> notifications)
+    {
+        return new PatientDashboardResponse
         {
-            return new MedicalHistory
-            {
-                PatientId = request.PatientId,
-                DateRecorded = request.DateRecorded,
-                DoctorId = request.DoctorId,
-                Diagnosis = request.Diagnosis,
-                Treatment = request.Treatment,
-                FollowUpDate = request.FollowUpDate,
-                AttachmentUrl = request.AttachmentUrl
-            };
-        }
-
-        public static void ApplyUpdate(MedicalHistory medicalHistory, MedicalHistoryUpdateViewModel request)
-        {
-            medicalHistory.DateRecorded = request.DateRecorded;
-            medicalHistory.DoctorId = request.DoctorId;
-            medicalHistory.Diagnosis = request.Diagnosis;
-            medicalHistory.Treatment = request.Treatment;
-            medicalHistory.FollowUpDate = request.FollowUpDate;
-            medicalHistory.AttachmentUrl = request.AttachmentUrl;
-        }
+            FirstName = patient.FirstName,
+            UpcomingAppointments = appointments,
+            Notifications = notifications
+        };
     }
 }
