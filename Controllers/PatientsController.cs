@@ -5,6 +5,7 @@ using PatientApi.Data;
 using PatientApi.Models.Entities;
 using PatientApi.Models.ViewModels;
 using PatientApi.Services.Interfaces;
+using PatientApi.Extensions;
 
 namespace PatientApi.Controllers
 {
@@ -28,6 +29,7 @@ namespace PatientApi.Controllers
         // Get all patients (simple list)
         // =========================
         [HttpGet("all")]
+        [Authorize(Roles = "Admin,Doctor,Nurse")]
         public async Task<IActionResult> GetPatients()
         {
             var patients = await _context.Patients.ToListAsync();
@@ -38,6 +40,7 @@ namespace PatientApi.Controllers
         // Add patient directly to DbContext (testing only)
         // =========================
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddPatient([FromBody] Patient patient)
         {
             _context.Patients.Add(patient);
@@ -49,6 +52,7 @@ namespace PatientApi.Controllers
         // Get patients with pagination + optional gender filter
         // =========================
         [HttpGet]
+        [Authorize(Roles = "Admin,Doctor,Nurse")]
         public async Task<IActionResult> Get(
             [FromQuery] int? gender,
             [FromQuery] int page = 1,
@@ -70,6 +74,18 @@ namespace PatientApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
+            if (User.IsInRole("Patient"))
+            {
+                if (!User.TryGetUserId(out var userId)) return Unauthorized();
+                var myPatientId = await _context.Patients
+                    .Where(p => p.UserId == userId)
+                    .Select(p => (int?)p.Id)
+                    .FirstOrDefaultAsync();
+
+                if (!myPatientId.HasValue) return Unauthorized("Patient profile not found.");
+                if (myPatientId.Value != id) return Forbid();
+            }
+
             var patient = await _service.GetByIdAsync(id);
             if (patient == null)
                 return NotFound();
@@ -81,6 +97,7 @@ namespace PatientApi.Controllers
         // Create patient (ViewModel → Entity)
         // =========================
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] PatientCreateViewModel vm)
         {
             if (!ModelState.IsValid)
@@ -106,6 +123,7 @@ namespace PatientApi.Controllers
         // Update patient (FIXED VERSION ✅)
         // =========================
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(
             int id,
             [FromBody] PatientUpdateViewModel vm)
@@ -136,6 +154,7 @@ namespace PatientApi.Controllers
         // Delete patient
         // =========================
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _service.DeleteAsync(id);
@@ -148,14 +167,30 @@ namespace PatientApi.Controllers
         // =========================
         // Patient dashboard
         // =========================
-        [HttpGet("dashboard")]
+        [HttpGet("dashboard/me")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetMyDashboard()
+        {
+            if (!User.TryGetUserId(out var userId)) return Unauthorized();
+            var patientId = await _context.Patients
+                .Where(p => p.UserId == userId)
+                .Select(p => (int?)p.Id)
+                .FirstOrDefaultAsync();
+
+            if (!patientId.HasValue) return Unauthorized("Patient profile not found.");
+
+            var dashboard = await _service.GetDashboardAsync(patientId.Value);
+            if (dashboard == null) return NotFound();
+
+            return Ok(dashboard);
+        }
+
         [HttpGet("dashboard/{patientId:int}")]
-        public async Task<IActionResult> GetDashboard(int patientId)
+        [Authorize(Roles = "Admin,Doctor,Nurse")]
+        public async Task<IActionResult> GetDashboardForPatient(int patientId)
         {
             var dashboard = await _service.GetDashboardAsync(patientId);
-            if (dashboard == null)
-                return NotFound();
-
+            if (dashboard == null) return NotFound();
             return Ok(dashboard);
         }
     }

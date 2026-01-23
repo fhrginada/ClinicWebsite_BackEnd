@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using PatientApi.Services.Interfaces;
 
 namespace PatientApi.Controllers
 {
     [ApiController]
     [Route("api/exports")]
+    [Authorize(Roles = "Admin")]
     public class ExportsController : ControllerBase
     {
         private readonly IExportService _service;

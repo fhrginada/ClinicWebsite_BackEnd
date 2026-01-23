@@ -41,9 +41,14 @@ namespace PatientApi.Services.Implementations
             }).ToList();
         }
 
-        public async Task MarkAsReadAsync(int notificationId)
+        public async Task<bool> MarkAsReadAsync(int notificationId, int actingUserId)
         {
+            var notification = await _repo.GetByIdAsync(notificationId);
+            if (notification == null) return false;
+            if (notification.UserId != actingUserId) return false;
+
             await _repo.MarkAsReadAsync(notificationId);
+            return true;
         }
     }
 

@@ -82,6 +82,8 @@ builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>(
 builder.Services.AddScoped<INurseRepository, NurseRepository>();
 builder.Services.AddScoped<INurseScheduleRepository, NurseScheduleRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 
 // =========================
 // Domain Services
@@ -93,6 +95,8 @@ builder.Services.AddScoped<IConsultationService, ConsultationService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 builder.Services.AddScoped<INurseScheduleService, NurseScheduleService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 builder.Services.AddScoped<IExportService, ExportService>();
 
 // =========================
@@ -102,7 +106,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -152,7 +156,13 @@ app.UseMiddleware<LocalizationMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
+
+
+
+
+
+
+

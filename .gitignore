@@ -1,29 +1,21 @@
-# Visual Studio
+# Build outputs
+/bin/
+/obj/
 .vs/
-bin/
-obj/
 
 # User-specific files
 *.user
 *.suo
 
-# Logs
-*.log
-=======
-### Build outputs
-/bin/
-/obj/
-.vs/
-
-### User uploads and generated content
-/wwwroot/uploads/
-
-### VS Code
+# VS Code
 .vscode/
 
-### Logs
+# Logs
 *.log
 
-### OS files
+# User uploads and generated content
+/wwwroot/uploads/
+
+# OS files
 .DS_Store
 Thumbs.db

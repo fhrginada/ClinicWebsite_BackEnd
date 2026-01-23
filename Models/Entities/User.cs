@@ -17,6 +17,8 @@ namespace PatientApi.Models.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryDate { get; set; }
 
+        public string? Address { get; set; }
+
         public UserRole Role { get; set; } = UserRole.Patient;
 
         public bool IsActive { get; set; } = true;

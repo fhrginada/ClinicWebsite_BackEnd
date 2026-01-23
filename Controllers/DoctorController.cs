@@ -1,5 +1,6 @@
 ﻿using PatientApi.Models.ViewModels.DoctorVM;
 using PatientApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PatientApi.Models.Entities;
 
@@ -20,6 +21,7 @@ namespace PatientApi.Controllers
 
         // POST: api/Doctor
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorRequest request)
         {
             var result = await _doctorService.CreateDoctorAsync(request);
@@ -28,6 +30,7 @@ namespace PatientApi.Controllers
 
         // GET: api/Doctor
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllDoctors()
         {
             var doctors = await _doctorService.GetAllDoctorsAsync();
@@ -36,6 +39,7 @@ namespace PatientApi.Controllers
 
         // GET: api/Doctor/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDoctorById(int id)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(id);
@@ -47,6 +51,7 @@ namespace PatientApi.Controllers
 
         // PUT: api/Doctor/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateDoctor(int id, [FromBody] UpdateDoctorRequest request)
         {
             var updated = await _doctorService.UpdateDoctorAsync(id, request);
@@ -58,6 +63,7 @@ namespace PatientApi.Controllers
 
         // DELETE: api/Doctor/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteDoctor(int id)
         {
             var deleted = await _doctorService.DeleteDoctorAsync(id);
@@ -68,6 +74,7 @@ namespace PatientApi.Controllers
         }
 
         [HttpGet("{id:int}/availability")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAvailability(int id, [FromQuery] DateTime? startDate = null, [FromQuery] int days = 7)
         {
             var availability = await _scheduleService.GetDoctorAvailabilityAsync(id, startDate, days);
